@@ -1,7 +1,5 @@
 library wx_box;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/box.dart';
+export 'src/border.dart';
+export 'src/animated.dart';

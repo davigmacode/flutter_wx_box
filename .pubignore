@@ -1,0 +1,4 @@
+media/
+example/*
+!example/lib
+!example/README.md

@@ -1,3 +1,5 @@
-## 0.0.1
+## 1.0.0
 
-* TODO: Describe initial release.
+* Added box widget
+* Added animated box widget
+* Added border painter widget

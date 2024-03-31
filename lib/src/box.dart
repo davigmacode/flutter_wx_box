@@ -99,40 +99,34 @@ class WxBox extends StatelessWidget {
   final BorderRadius? borderRadius;
 
   /// The shape to fill the [color] into and to cast as the [shadows].
+  /// This ignored if [border] not null.
   final BoxShape? shape;
 
   /// Controls how to clip.
   /// Defaults to [Clip.antiAlias].
   final Clip? clipBehavior;
 
+  static const defaultElevation = 0.0;
+
+  static const defaultShadowColor = Color(0xFF000000);
+
+  static const defaultClipBehavior = Clip.antiAlias;
+
   bool get hasCustomShape => border != null;
 
-  BorderSide? get effectiveBorderSide {
-    return BorderSide.none
-        .copyWith(
-          color: borderSide?.color,
-          width: borderSide?.width,
-          style: borderSide?.style,
-        )
-        .copyWith(
-          color: borderColor,
-          width: borderWidth,
-          style: borderStyle,
-        );
-  }
-
-  OutlinedBorder get borderShape {
-    switch (shape) {
-      case BoxShape.circle:
-        return CircleBorder(
-          side: effectiveBorderSide ?? BorderSide.none,
-        );
-      default:
-        return RoundedRectangleBorder(
-          side: effectiveBorderSide ?? BorderSide.none,
-          borderRadius: borderRadius ?? BorderRadius.zero,
-        );
+  OutlinedBorder getBorderShape({
+    required BorderSide side,
+  }) {
+    if (border != null) {
+      return border!;
     }
+    if (shape == BoxShape.circle) {
+      return CircleBorder(side: side);
+    }
+    return RoundedRectangleBorder(
+      side: side,
+      borderRadius: borderRadius ?? BorderRadius.zero,
+    );
   }
 
   @override
@@ -162,18 +156,28 @@ class WxBox extends StatelessWidget {
       result = ConstrainedBox(constraints: constraints, child: result);
     }
 
-    final border = this.border ?? borderShape;
-    final textDirection = Directionality.maybeOf(context);
-    final clipper = ShapeBorderClipper(
-      textDirection: textDirection,
-      shape: border,
+    final effectiveBorderSide = (borderSide ?? BorderSide.none).copyWith(
+      color: borderColor,
+      width: borderWidth,
+      style: borderStyle,
     );
+    final effectiveBorderShape = getBorderShape(side: effectiveBorderSide);
+    final hasBorder =
+        effectiveBorderSide.style != BorderStyle.none || hasCustomShape;
 
-    result = WxBorder(
-      textDirection: textDirection,
-      shape: border,
-      child: result,
-    );
+    CustomClipper<Path>? clipper;
+    if (hasBorder) {
+      final textDirection = Directionality.maybeOf(context);
+      clipper = ShapeBorderClipper(
+        textDirection: textDirection,
+        shape: effectiveBorderShape,
+      );
+      result = WxBorder(
+        textDirection: textDirection,
+        shape: effectiveBorderShape,
+        child: result,
+      );
+    }
 
     if (color == null) {
       result = ClipPath(
@@ -185,18 +189,18 @@ class WxBox extends StatelessWidget {
       if (hasCustomShape) {
         result = PhysicalShape(
           color: color!,
-          elevation: elevation ?? 0.0,
-          shadowColor: shadowColor ?? const Color(0xFF000000),
-          clipBehavior: clipBehavior ?? Clip.antiAlias,
-          clipper: clipper,
+          elevation: elevation ?? defaultElevation,
+          shadowColor: shadowColor ?? defaultShadowColor,
+          clipBehavior: clipBehavior ?? defaultClipBehavior,
+          clipper: clipper!,
           child: result,
         );
       } else {
         result = PhysicalModel(
           color: color!,
-          elevation: elevation ?? 0.0,
-          shadowColor: shadowColor ?? const Color(0xFF000000),
-          clipBehavior: clipBehavior ?? Clip.antiAlias,
+          elevation: elevation ?? defaultElevation,
+          shadowColor: shadowColor ?? defaultShadowColor,
+          clipBehavior: clipBehavior ?? defaultClipBehavior,
           borderRadius: borderRadius,
           shape: shape ?? BoxShape.rectangle,
           child: result,

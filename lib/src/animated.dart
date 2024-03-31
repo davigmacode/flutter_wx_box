@@ -113,29 +113,20 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
 
 class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
   BorderSide get borderSide {
-    return BorderSide.none
-        .copyWith(
-          color: widget.borderSide?.color,
-          width: widget.borderSide?.width,
-          style: widget.borderSide?.style,
-        )
-        .copyWith(
-          color: widget.borderColor,
-          width: widget.borderWidth,
-          style: widget.borderStyle,
-        );
+    return (widget.borderSide ?? BorderSide.none).copyWith(
+      color: widget.borderColor,
+      width: widget.borderWidth,
+      style: widget.borderStyle,
+    );
   }
 
   ShapeBorder get borderShape {
-    switch (widget.shape) {
-      case BoxShape.circle:
-        return CircleBorder(side: borderSide);
-      default:
-        return RoundedRectangleBorder(
-          side: borderSide,
-          borderRadius: widget.borderRadius ?? BorderRadius.zero,
-        );
-    }
+    return widget.shape == BoxShape.circle
+        ? CircleBorder(side: borderSide)
+        : RoundedRectangleBorder(
+            side: borderSide,
+            borderRadius: widget.borderRadius ?? BorderRadius.zero,
+          );
   }
 
   ShapeBorder get border => widget.border ?? borderShape;

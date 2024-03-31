@@ -19,6 +19,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
+    this.borderAlign,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -91,6 +92,10 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   /// painting the border, but the border still has a [width].
   final BorderStyle? borderStyle;
 
+  /// The relative position of the stroke on a [BorderSide] in an
+  /// [OutlinedBorder] or [Border].
+  final double? borderAlign;
+
   /// The border outline's color and weight.
   ///
   /// If [side] is [BorderSide.none], which is the default, an outline is not drawn.
@@ -117,6 +122,7 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       color: widget.borderColor,
       width: widget.borderWidth,
       style: widget.borderStyle,
+      strokeAlign: widget.borderAlign,
     );
   }
 

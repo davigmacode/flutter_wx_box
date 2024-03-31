@@ -115,7 +115,7 @@ class WxBox extends StatelessWidget {
 
   static const defaultShadowColor = Color(0xFF000000);
 
-  static const defaultClipBehavior = Clip.antiAlias;
+  static const defaultClipBehavior = Clip.none;
 
   bool get hasCustomShape => border != null;
 
@@ -188,7 +188,7 @@ class WxBox extends StatelessWidget {
     if (color == null) {
       result = ClipPath(
         clipper: clipper,
-        clipBehavior: clipBehavior ?? Clip.antiAlias,
+        clipBehavior: clipBehavior ?? defaultClipBehavior,
         child: result,
       );
     } else {

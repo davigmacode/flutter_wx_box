@@ -20,15 +20,13 @@ WxBox(
   shape: BoxShape.circle,
 )
 
-WxBox(
+WxBox.circle(
   color: Colors.amber,
-  width: 50,
-  height: 50,
+  radius: 25,
   borderWidth: 5,
   borderStyle: BorderStyle.solid,
   borderColor: Theme.of(context).colorScheme.surface,
   borderAlign: BorderSide.strokeAlignOutside,
-  shape: BoxShape.circle,
   alignment: Alignment.center,
   child: Text(
     '1',
@@ -36,17 +34,15 @@ WxBox(
   ),
 )
 
-WxBox(
+WxBox.stadium(
   color: Colors.amber,
   width: 150,
   height: 50,
-  border: const StadiumBorder(
-    side: BorderSide(
-      width: 5,
-      style: BorderStyle.solid,
-      color: Colors.black,
-      strokeAlign: BorderSide.strokeAlignOutside,
-    ),
+  borderSide: BorderSide(
+    width: 5,
+    style: BorderStyle.solid,
+    color: Colors.black,
+    strokeAlign: BorderSide.strokeAlignOutside,
   ),
   alignment: Alignment.center,
   child: Text(

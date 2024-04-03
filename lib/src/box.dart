@@ -246,10 +246,10 @@ class WxBox extends StatelessWidget {
     if (border != null) {
       return border!;
     }
-    if (shape?.isCircle == true) {
+    if (shape == WxBoxShape.circle) {
       return CircleBorder(side: side);
     }
-    if (shape?.isStadium == true) {
+    if (shape == WxBoxShape.stadium) {
       return StadiumBorder(side: side);
     }
     return RoundedRectangleBorder(

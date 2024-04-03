@@ -260,10 +260,10 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
     if (widget.border != null) {
       return widget.border!;
     }
-    if (widget.shape?.isCircle == true) {
+    if (widget.shape == WxBoxShape.circle) {
       return CircleBorder(side: borderSide);
     }
-    if (widget.shape?.isStadium == true) {
+    if (widget.shape == WxBoxShape.stadium) {
       return StadiumBorder(side: borderSide);
     }
     return RoundedRectangleBorder(

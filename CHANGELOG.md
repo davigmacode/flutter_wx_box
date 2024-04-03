@@ -1,3 +1,8 @@
+## 2.0.2
+
+* Bring back the WxBoxShape getter
+* Adjust sdk constraints
+
 ## 2.0.1
 
 * Removed WxBoxShape getter

@@ -1,6 +1,6 @@
 name: wx_box
 description: Const widget that provides a box-like layout with customizable elevation.
-version: 2.0.1
+version: 2.0.2
 homepage: https://github.com/davigmacode/flutter_wx_box
 
 topics:
@@ -15,8 +15,8 @@ funding:
  - https://ko-fi.com/davigmacode
 
 environment:
-  sdk: '>=3.3.1 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=2.17.0 <4.0.0'
+  flutter: '>=2.0.0'
 
 dependencies:
   flutter:
@@ -25,7 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -26,5 +26,14 @@ enum WxBoxShape {
 
   /// A border that fits a stadium-shaped border (a box with semicircles on the ends)
   /// within the rectangle of the widget it is applied to.
-  stadium,
+  stadium;
+
+  /// Whether or not this is rectangle shape
+  bool get isRectangle => this == WxBoxShape.rectangle;
+
+  /// Whether or not this is circle shape
+  bool get isCircle => this == WxBoxShape.circle;
+
+  /// Whether or not this is stadium shape
+  bool get isStadium => this == WxBoxShape.stadium;
 }

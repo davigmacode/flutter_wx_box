@@ -46,7 +46,7 @@ class MyHomePage extends StatelessWidget {
               elevation: 2,
             ),
             const WxBox(height: 20),
-            WxBox(
+            WxAnimatedBox(
               color: Colors.amber,
               width: 150,
               height: 50,

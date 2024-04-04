@@ -292,22 +292,17 @@ class WxBox extends StatelessWidget {
       strokeAlign: borderAlign,
     );
     final effectiveBorderShape = getBorderShape(side: effectiveBorderSide);
-    final hasBorder =
-        effectiveBorderSide.style != BorderStyle.none || hasCustomShape;
 
-    CustomClipper<Path>? clipper;
-    if (hasBorder) {
-      final textDirection = Directionality.maybeOf(context);
-      clipper = ShapeBorderClipper(
-        textDirection: textDirection,
-        shape: effectiveBorderShape,
-      );
-      result = WxBorder(
-        textDirection: textDirection,
-        shape: effectiveBorderShape,
-        child: result,
-      );
-    }
+    final textDirection = Directionality.maybeOf(context);
+    CustomClipper<Path> clipper = ShapeBorderClipper(
+      textDirection: textDirection,
+      shape: effectiveBorderShape,
+    );
+    result = WxBorder(
+      textDirection: textDirection,
+      shape: effectiveBorderShape,
+      child: result,
+    );
 
     if (color == null) {
       result = ClipPath(
@@ -316,23 +311,22 @@ class WxBox extends StatelessWidget {
         child: result,
       );
     } else {
-      if (hasCustomShape || shape == WxBoxShape.stadium) {
-        result = PhysicalShape(
-          color: color!,
-          elevation: elevation ?? defaultElevation,
-          shadowColor: shadowColor ?? defaultShadowColor,
-          clipBehavior: clipBehavior ?? defaultClipBehavior,
-          clipper: clipper!,
-          child: result,
-        );
-      } else {
+      if (shape == WxBoxShape.rectangle) {
         result = PhysicalModel(
           color: color!,
           elevation: elevation ?? defaultElevation,
           shadowColor: shadowColor ?? defaultShadowColor,
           clipBehavior: clipBehavior ?? defaultClipBehavior,
           borderRadius: borderRadius,
-          shape: BoxShape.values[shape?.index ?? 0],
+          child: result,
+        );
+      } else {
+        result = PhysicalShape(
+          color: color!,
+          elevation: elevation ?? defaultElevation,
+          shadowColor: shadowColor ?? defaultShadowColor,
+          clipBehavior: clipBehavior ?? defaultClipBehavior,
+          clipper: clipper,
           child: result,
         );
       }

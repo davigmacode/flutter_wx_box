@@ -1,6 +1,6 @@
 name: wx_box
 description: Const widget that provides a box-like layout with customizable elevation.
-version: 2.0.2
+version: 2.0.3
 homepage: https://github.com/davigmacode/flutter_wx_box
 
 topics:

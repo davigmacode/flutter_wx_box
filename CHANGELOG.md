@@ -1,3 +1,7 @@
+## 2.0.3
+
+* Rectangle shape use PhysicalModel otherwise use PhysicalShape
+
 ## 2.0.2
 
 * Bring back the WxBoxShape getter

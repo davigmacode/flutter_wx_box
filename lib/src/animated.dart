@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'box.dart';
-import 'shape.dart';
+import 'utils.dart';
 
 class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   /// Create an animated box widget
@@ -25,7 +25,6 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
-    this.shape,
     required this.child,
   });
 
@@ -42,7 +41,6 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.color,
     this.shadowColor,
     this.elevation,
-    this.border,
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
@@ -51,7 +49,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderRadius,
     this.clipBehavior,
     required this.child,
-  })  : shape = WxBoxShape.rectangle,
+  })  : border = const RoundedRectangleBorder(),
         width = size,
         height = size;
 
@@ -77,8 +75,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderRadius,
     this.clipBehavior,
     required this.child,
-  })  : border = null,
-        shape = WxBoxShape.rectangle;
+  }) : border = const RoundedRectangleBorder();
 
   /// Create an animated box widget with circle shape
   const WxAnimatedBox.circle({
@@ -101,8 +98,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderRadius,
     this.clipBehavior,
     required this.child,
-  })  : border = null,
-        shape = WxBoxShape.circle,
+  })  : border = const CircleBorder(),
         width = radius != null ? radius * 2 : null,
         height = radius != null ? radius * 2 : null;
 
@@ -128,34 +124,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderRadius,
     this.clipBehavior,
     required this.child,
-  })  : border = null,
-        shape = WxBoxShape.stadium;
-
-  /// Create an animated box widget with custom shape
-  const WxAnimatedBox.shape({
-    super.key,
-    super.duration = const Duration(milliseconds: 200),
-    super.curve,
-    required OutlinedBorder shape,
-    this.width,
-    this.height,
-    this.constraints,
-    this.alignment,
-    this.padding,
-    this.margin,
-    this.color,
-    this.shadowColor,
-    this.clipBehavior,
-    this.elevation,
-    this.child,
-  })  : border = shape,
-        borderColor = null,
-        borderWidth = null,
-        borderStyle = null,
-        borderAlign = null,
-        borderSide = null,
-        borderRadius = null,
-        shape = null;
+  }) : border = const StadiumBorder();
 
   /// The widget below this widget in the tree.
   final Widget? child;
@@ -235,9 +204,6 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   /// The border radius of the rounded corners.
   final BorderRadius? borderRadius;
 
-  /// The shape to fill the [color] into and to cast as the [shadows].
-  final WxBoxShape? shape;
-
   /// Controls how to clip.
   /// Defaults to [Clip.antiAlias].
   final Clip? clipBehavior;
@@ -247,31 +213,21 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
 }
 
 class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
-  BorderSide get borderSide {
-    return (widget.borderSide ?? BorderSide.none).copyWith(
-      color: widget.borderColor,
-      width: widget.borderWidth,
-      style: widget.borderStyle,
-      strokeAlign: widget.borderAlign,
-    );
-  }
-
   ShapeBorder get borderShape {
-    if (widget.border != null) {
-      return widget.border!;
-    }
-    if (widget.shape == WxBoxShape.circle) {
-      return CircleBorder(side: borderSide);
-    }
-    if (widget.shape == WxBoxShape.stadium) {
-      return StadiumBorder(side: borderSide);
-    }
-    return RoundedRectangleBorder(
-      side: borderSide,
-      borderRadius: widget.borderRadius ?? BorderRadius.zero,
+    return buildBorder(
+      borderShape: widget.border,
+      borderRadius: widget.borderRadius,
+      borderSide: widget.borderSide,
+      borderColor: widget.borderColor,
+      borderWidth: widget.borderWidth,
+      borderStyle: widget.borderStyle,
+      borderAlign: widget.borderAlign,
     );
   }
 
+  Tween<double?>? widthTween;
+  Tween<double?>? heightTween;
+  BoxConstraintsTween? constraintsTween;
   AlignmentGeometryTween? alignmentTween;
   EdgeInsetsGeometryTween? paddingTween;
   EdgeInsetsGeometryTween? marginTween;
@@ -282,6 +238,24 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
+    widthTween = visitor(
+      widthTween,
+      widget.width,
+      (dynamic value) => Tween<double?>(begin: value),
+    ) as Tween<double?>?;
+
+    heightTween = visitor(
+      heightTween,
+      widget.height,
+      (dynamic value) => Tween<double?>(begin: value),
+    ) as Tween<double?>?;
+
+    constraintsTween = visitor(
+      constraintsTween,
+      widget.constraints,
+      (dynamic value) => BoxConstraintsTween(begin: value),
+    ) as BoxConstraintsTween?;
+
     alignmentTween = visitor(
       alignmentTween,
       widget.alignment,
@@ -314,7 +288,7 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
 
     elevationTween = visitor(
       elevationTween,
-      widget.elevation ?? 0.0,
+      widget.elevation,
       (dynamic value) => Tween<double?>(begin: value),
     ) as Tween<double?>?;
 
@@ -328,9 +302,9 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
   @override
   Widget build(BuildContext context) {
     return WxBox(
-      width: widget.width,
-      height: widget.height,
-      constraints: widget.constraints,
+      width: widthTween?.evaluate(animation),
+      height: heightTween?.evaluate(animation),
+      constraints: constraintsTween?.evaluate(animation),
       alignment: alignmentTween?.evaluate(animation),
       padding: paddingTween?.evaluate(animation),
       margin: marginTween?.evaluate(animation),

@@ -142,15 +142,14 @@ class MyHomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    WxAnimatedBox(
+                    WxAnimatedBox.stadium(
                       color: Colors.amber,
                       width: 150,
                       height: 50,
-                      borderWidth: 2,
+                      borderWidth: 4,
                       borderStyle: BorderStyle.solid,
                       borderColor: Theme.of(context).colorScheme.onSurface,
                       borderAlign: BorderSide.strokeAlignOutside,
-                      shape: WxBoxShape.stadium,
                       alignment: Alignment.center,
                       child: Text(
                         'Text',

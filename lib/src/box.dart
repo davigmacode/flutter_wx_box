@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'border.dart';
-import 'shape.dart';
+import 'utils.dart';
 
 /// Const widget that provides a box-like layout with customizable elevation
 class WxBox extends StatelessWidget {
@@ -21,7 +21,6 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.shape,
     this.shadowColor,
     this.clipBehavior,
     this.elevation,
@@ -37,7 +36,6 @@ class WxBox extends StatelessWidget {
     this.padding,
     this.margin,
     this.color,
-    this.border,
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
@@ -48,7 +46,7 @@ class WxBox extends StatelessWidget {
     this.clipBehavior,
     this.elevation,
     this.child,
-  })  : shape = WxBoxShape.rectangle,
+  })  : border = const RoundedRectangleBorder(),
         width = size,
         height = size;
 
@@ -72,8 +70,7 @@ class WxBox extends StatelessWidget {
     this.clipBehavior,
     this.elevation,
     this.child,
-  })  : border = null,
-        shape = WxBoxShape.rectangle;
+  }) : border = const RoundedRectangleBorder();
 
   /// Create a box widget with circle shape
   const WxBox.circle({
@@ -94,8 +91,7 @@ class WxBox extends StatelessWidget {
     this.clipBehavior,
     this.elevation,
     this.child,
-  })  : border = null,
-        shape = WxBoxShape.circle,
+  })  : border = const CircleBorder(),
         width = radius != null ? radius * 2 : null,
         height = radius != null ? radius * 2 : null;
 
@@ -119,32 +115,7 @@ class WxBox extends StatelessWidget {
     this.clipBehavior,
     this.elevation,
     this.child,
-  })  : border = null,
-        shape = WxBoxShape.stadium;
-
-  /// Create a box widget with custom shape
-  const WxBox.shape({
-    super.key,
-    required OutlinedBorder shape,
-    this.width,
-    this.height,
-    this.constraints,
-    this.alignment,
-    this.padding,
-    this.margin,
-    this.color,
-    this.shadowColor,
-    this.clipBehavior,
-    this.elevation,
-    this.child,
-  })  : border = shape,
-        borderColor = null,
-        borderWidth = null,
-        borderStyle = null,
-        borderAlign = null,
-        borderSide = null,
-        borderRadius = null,
-        shape = null;
+  }) : border = const StadiumBorder();
 
   /// The widget below this widget in the tree.
   final Widget? child;
@@ -224,39 +195,18 @@ class WxBox extends StatelessWidget {
   /// The border radius of the rounded corners.
   final BorderRadius? borderRadius;
 
-  /// The shape to fill the [color] into and to cast as the [shadows].
-  /// This ignored if [border] not null.
-  final WxBoxShape? shape;
-
   /// Controls how to clip.
   /// Defaults to [Clip.antiAlias].
   final Clip? clipBehavior;
 
+  /// default value for [elevation]
   static const defaultElevation = 0.0;
 
+  /// default value for [shadowColor]
   static const defaultShadowColor = Color(0xFF000000);
 
+  /// default value for [clipBehavior]
   static const defaultClipBehavior = Clip.none;
-
-  bool get hasCustomShape => border != null;
-
-  OutlinedBorder getBorderShape({
-    required BorderSide side,
-  }) {
-    if (border != null) {
-      return border!;
-    }
-    if (shape == WxBoxShape.circle) {
-      return CircleBorder(side: side);
-    }
-    if (shape == WxBoxShape.stadium) {
-      return StadiumBorder(side: side);
-    }
-    return RoundedRectangleBorder(
-      side: side,
-      borderRadius: borderRadius ?? BorderRadius.zero,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -285,13 +235,15 @@ class WxBox extends StatelessWidget {
       result = ConstrainedBox(constraints: constraints, child: result);
     }
 
-    final effectiveBorderSide = (borderSide ?? BorderSide.none).copyWith(
-      color: borderColor,
-      width: borderWidth,
-      style: borderStyle,
-      strokeAlign: borderAlign,
+    final effectiveBorderShape = buildBorder(
+      borderShape: border,
+      borderRadius: borderRadius,
+      borderSide: borderSide,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      borderStyle: borderStyle,
+      borderAlign: borderAlign,
     );
-    final effectiveBorderShape = getBorderShape(side: effectiveBorderSide);
 
     final textDirection = Directionality.maybeOf(context);
     CustomClipper<Path> clipper = ShapeBorderClipper(
@@ -311,7 +263,7 @@ class WxBox extends StatelessWidget {
         child: result,
       );
     } else {
-      if (shape == WxBoxShape.rectangle) {
+      if (border is RoundedRectangleBorder) {
         result = PhysicalModel(
           color: color!,
           elevation: elevation ?? defaultElevation,

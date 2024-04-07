@@ -1,3 +1,8 @@
+## 3.0.0
+
+* Removed WxBoxShape and `shape` property, use `border` instead.
+* Animated width, height, and constraints.
+
 ## 2.0.3
 
 * Rectangle shape use PhysicalModel otherwise use PhysicalShape

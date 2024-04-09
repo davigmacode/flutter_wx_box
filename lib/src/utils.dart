@@ -9,7 +9,6 @@ OutlinedBorder buildBorder({
   BorderStyle? borderStyle,
   double? borderAlign,
 }) {
-  borderRadius ??= BorderRadius.zero;
   borderShape ??= const RoundedRectangleBorder();
   borderShape = borderShape.copyWith(
     side: borderShape.side

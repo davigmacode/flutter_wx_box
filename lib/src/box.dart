@@ -248,7 +248,7 @@ class WxBox extends StatelessWidget {
 
     result = DecoratedBox(
       decoration: ShapeDecoration(
-        color: effectiveElevation == 0 ? color : null,
+        color: color,
         shape: effectiveBorderShape,
       ),
       child: result,
@@ -260,7 +260,7 @@ class WxBox extends StatelessWidget {
       shape: effectiveBorderShape,
     );
 
-    if (color == null || effectiveElevation == 0) {
+    if (effectiveElevation == 0) {
       result = ClipPath(
         clipper: clipper,
         clipBehavior: effectiveClipBehavior,
@@ -269,7 +269,7 @@ class WxBox extends StatelessWidget {
     } else {
       if (effectiveBorderShape is RoundedRectangleBorder) {
         result = PhysicalModel(
-          color: color!,
+          color: const Color(0x00000000),
           elevation: effectiveElevation,
           shadowColor: effectiveElevationColor,
           clipBehavior: effectiveClipBehavior,
@@ -279,7 +279,7 @@ class WxBox extends StatelessWidget {
         );
       } else {
         result = PhysicalShape(
-          color: color!,
+          color: const Color(0x00000000),
           elevation: effectiveElevation,
           shadowColor: effectiveElevationColor,
           clipBehavior: effectiveClipBehavior,

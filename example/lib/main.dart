@@ -43,7 +43,7 @@ class MyHomePage extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 20,
                   children: [
-                    WxBox(
+                    WxAnimatedBox(
                       alignment: Alignment.center,
                       constraints: BoxConstraints(
                         minHeight: 45,
@@ -54,6 +54,11 @@ class MyHomePage extends StatelessWidget {
                         horizontal: 20,
                         vertical: 5,
                       ),
+                      borderStyle: BorderStyle.solid,
+                      borderColor: Colors.red,
+                      borderWidth: 1,
+                      borderOffset: 7,
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
                       child: Text(
                         'Text',
                         style: TextStyle(
@@ -77,7 +82,7 @@ class MyHomePage extends StatelessWidget {
                       borderWidth: 1,
                       borderStyle: BorderStyle.solid,
                       borderColor: Colors.black,
-                      borderAlign: BorderSide.strokeAlignOutside,
+                      borderOffset: BorderSide.strokeAlignOutside,
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       padding: EdgeInsets.all(5),
                       child: Text(
@@ -108,13 +113,27 @@ class MyHomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    WxBox.circle(
+                    WxAnimatedBox.circle(
                       radius: 25,
                       alignment: Alignment.center,
-                      color: Colors.amber,
+                      shadows: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset: Offset(0, 0), // changes position of shadow
+                        ),
+                      ],
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.teal,
+                          Colors.indigo,
+                        ],
+                      ),
                       child: Text(
                         'Text',
                         style: TextStyle(
+                          color: Colors.white,
                           height: 1.15,
                         ),
                       ),
@@ -149,7 +168,7 @@ class MyHomePage extends StatelessWidget {
                       borderWidth: 4,
                       borderStyle: BorderStyle.solid,
                       borderColor: Theme.of(context).colorScheme.onSurface,
-                      borderAlign: BorderSide.strokeAlignOutside,
+                      borderOffset: BorderSide.strokeAlignOutside,
                       alignment: Alignment.center,
                       child: Text(
                         'Text',

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'box.dart';
 import 'utils.dart';
@@ -15,7 +16,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.margin,
     this.alignment,
     this.color,
-    this.shadowColor,
+    this.elevationColor,
     this.elevation,
     this.border,
     this.borderColor,
@@ -39,7 +40,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.margin,
     this.alignment,
     this.color,
-    this.shadowColor,
+    this.elevationColor,
     this.elevation,
     this.borderColor,
     this.borderWidth,
@@ -65,7 +66,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.margin,
     this.alignment,
     this.color,
-    this.shadowColor,
+    this.elevationColor,
     this.elevation,
     this.borderColor,
     this.borderWidth,
@@ -88,7 +89,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.margin,
     this.alignment,
     this.color,
-    this.shadowColor,
+    this.elevationColor,
     this.elevation,
     this.borderColor,
     this.borderWidth,
@@ -114,7 +115,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.margin,
     this.alignment,
     this.color,
-    this.shadowColor,
+    this.elevationColor,
     this.elevation,
     this.borderColor,
     this.borderWidth,
@@ -162,7 +163,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   final Color? color;
 
   /// When elevation is non zero the color to use for the shadow color.
-  final Color? shadowColor;
+  final Color? elevationColor;
 
   /// The z-coordinate relative to the parent at which to place this physical object.
   /// The value is non-negative.
@@ -232,7 +233,7 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
   EdgeInsetsGeometryTween? paddingTween;
   EdgeInsetsGeometryTween? marginTween;
   ColorTween? colorTween;
-  ColorTween? shadowColorTween;
+  ColorTween? elevationColorTween;
   Tween<double?>? elevationTween;
   ShapeBorderTween? borderShapeTween;
 
@@ -280,9 +281,9 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       (dynamic value) => ColorTween(begin: value),
     ) as ColorTween?;
 
-    shadowColorTween = visitor(
-      shadowColorTween,
-      widget.shadowColor,
+    elevationColorTween = visitor(
+      elevationColorTween,
+      widget.elevationColor,
       (dynamic value) => ColorTween(begin: value),
     ) as ColorTween?;
 
@@ -309,11 +310,18 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       padding: paddingTween?.evaluate(animation),
       margin: marginTween?.evaluate(animation),
       color: colorTween?.evaluate(animation),
-      shadowColor: shadowColorTween?.evaluate(animation),
+      elevationColor: elevationColorTween?.evaluate(animation),
       elevation: elevationTween?.evaluate(animation),
       border: borderShapeTween?.evaluate(animation) as OutlinedBorder,
       clipBehavior: widget.clipBehavior,
       child: widget.child,
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+        .add(DiagnosticsProperty<ShapeBorder>('borderShape', borderShape));
   }
 }

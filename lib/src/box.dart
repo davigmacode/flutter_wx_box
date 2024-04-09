@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'border.dart';
 import 'utils.dart';
 
 /// Const widget that provides a box-like layout with customizable elevation
@@ -21,7 +21,7 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.shadowColor,
+    this.elevationColor,
     this.clipBehavior,
     this.elevation,
     this.child,
@@ -42,7 +42,7 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.shadowColor,
+    this.elevationColor,
     this.clipBehavior,
     this.elevation,
     this.child,
@@ -66,7 +66,7 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.shadowColor,
+    this.elevationColor,
     this.clipBehavior,
     this.elevation,
     this.child,
@@ -87,7 +87,7 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.shadowColor,
+    this.elevationColor,
     this.clipBehavior,
     this.elevation,
     this.child,
@@ -111,7 +111,7 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.shadowColor,
+    this.elevationColor,
     this.clipBehavior,
     this.elevation,
     this.child,
@@ -153,7 +153,7 @@ class WxBox extends StatelessWidget {
   final Color? color;
 
   /// When elevation is non zero the color to use for the shadow color.
-  final Color? shadowColor;
+  final Color? elevationColor;
 
   /// The z-coordinate relative to the parent at which to place this physical object.
   /// The value is non-negative.
@@ -199,14 +199,15 @@ class WxBox extends StatelessWidget {
   /// Defaults to [Clip.antiAlias].
   final Clip? clipBehavior;
 
-  /// default value for [elevation]
-  static const defaultElevation = 0.0;
+  /// Elevation value from property with default value `0.0`
+  double get effectiveElevation => elevation ?? 0.0;
 
-  /// default value for [shadowColor]
-  static const defaultShadowColor = Color(0xFF000000);
+  /// Elevation color from property with default value black
+  Color get effectiveElevationColor =>
+      elevationColor ?? const Color(0xFF000000);
 
-  /// default value for [clipBehavior]
-  static const defaultClipBehavior = Clip.none;
+  /// Clip Behavior from property with default value `Clip.none`
+  Clip get effectiveClipBehavior => clipBehavior ?? Clip.none;
 
   @override
   Widget build(BuildContext context) {
@@ -245,39 +246,43 @@ class WxBox extends StatelessWidget {
       borderAlign: borderAlign,
     );
 
+    result = DecoratedBox(
+      decoration: ShapeDecoration(
+        color: effectiveElevation == 0 ? color : null,
+        shape: effectiveBorderShape,
+      ),
+      child: result,
+    );
+
     final textDirection = Directionality.maybeOf(context);
     CustomClipper<Path> clipper = ShapeBorderClipper(
       textDirection: textDirection,
       shape: effectiveBorderShape,
     );
-    result = WxBorder(
-      textDirection: textDirection,
-      shape: effectiveBorderShape,
-      child: result,
-    );
 
-    if (color == null) {
+    if (color == null || effectiveElevation == 0) {
       result = ClipPath(
         clipper: clipper,
-        clipBehavior: clipBehavior ?? defaultClipBehavior,
+        clipBehavior: effectiveClipBehavior,
         child: result,
       );
     } else {
-      if (border is RoundedRectangleBorder) {
+      if (effectiveBorderShape is RoundedRectangleBorder) {
         result = PhysicalModel(
           color: color!,
-          elevation: elevation ?? defaultElevation,
-          shadowColor: shadowColor ?? defaultShadowColor,
-          clipBehavior: clipBehavior ?? defaultClipBehavior,
-          borderRadius: borderRadius,
+          elevation: effectiveElevation,
+          shadowColor: effectiveElevationColor,
+          clipBehavior: effectiveClipBehavior,
+          borderRadius:
+              effectiveBorderShape.borderRadius.resolve(textDirection),
           child: result,
         );
       } else {
         result = PhysicalShape(
           color: color!,
-          elevation: elevation ?? defaultElevation,
-          shadowColor: shadowColor ?? defaultShadowColor,
-          clipBehavior: clipBehavior ?? defaultClipBehavior,
+          elevation: effectiveElevation,
+          shadowColor: effectiveElevationColor,
+          clipBehavior: effectiveClipBehavior,
           clipper: clipper,
           child: result,
         );
@@ -289,5 +294,31 @@ class WxBox extends StatelessWidget {
     }
 
     return result;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
+    properties
+        .add(DiagnosticsProperty<BoxConstraints?>('constraints', constraints));
+    properties
+        .add(DiagnosticsProperty<AlignmentGeometry?>('alignment', alignment));
+    properties
+        .add(DiagnosticsProperty<EdgeInsetsGeometry?>('padding', padding));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry?>('margin', margin));
+    properties.add(ColorProperty('color', color));
+    properties.add(ColorProperty('elevationColor', elevationColor));
+    properties.add(DoubleProperty('elevation', elevation));
+    properties.add(DiagnosticsProperty<OutlinedBorder?>('border', border));
+    properties.add(ColorProperty('borderColor', borderColor));
+    properties.add(DoubleProperty('borderWidth', borderWidth));
+    properties.add(EnumProperty<BorderStyle?>('borderStyle', borderStyle));
+    properties.add(DoubleProperty('borderAlign', borderAlign));
+    properties.add(DiagnosticsProperty<BorderSide?>('borderSide', borderSide));
+    properties
+        .add(DiagnosticsProperty<BorderRadius?>('borderRadius', borderRadius));
+    properties.add(EnumProperty<Clip?>('clipBehavior', clipBehavior));
   }
 }

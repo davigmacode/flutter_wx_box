@@ -13,6 +13,9 @@ class WxBox extends StatelessWidget {
     this.alignment,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.color,
     this.border,
     this.borderColor,
@@ -21,8 +24,8 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.elevationColor,
     this.clipBehavior,
+    this.elevationColor,
     this.elevation,
     this.child,
   });
@@ -35,6 +38,9 @@ class WxBox extends StatelessWidget {
     this.alignment,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.color,
     this.borderColor,
     this.borderWidth,
@@ -42,8 +48,8 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.elevationColor,
     this.clipBehavior,
+    this.elevationColor,
     this.elevation,
     this.child,
   })  : border = const RoundedRectangleBorder(),
@@ -59,6 +65,9 @@ class WxBox extends StatelessWidget {
     this.alignment,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.color,
     this.borderColor,
     this.borderWidth,
@@ -66,8 +75,8 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.elevationColor,
     this.clipBehavior,
+    this.elevationColor,
     this.elevation,
     this.child,
   }) : border = const RoundedRectangleBorder();
@@ -80,6 +89,9 @@ class WxBox extends StatelessWidget {
     this.alignment,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.color,
     this.borderColor,
     this.borderWidth,
@@ -87,8 +99,8 @@ class WxBox extends StatelessWidget {
     this.borderAlign,
     this.borderSide,
     this.borderRadius,
-    this.elevationColor,
     this.clipBehavior,
+    this.elevationColor,
     this.elevation,
     this.child,
   })  : border = const CircleBorder(),
@@ -104,6 +116,9 @@ class WxBox extends StatelessWidget {
     this.alignment,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.color,
     this.borderColor,
     this.borderWidth,
@@ -158,6 +173,21 @@ class WxBox extends StatelessWidget {
   /// The z-coordinate relative to the parent at which to place this physical object.
   /// The value is non-negative.
   final double? elevation;
+
+  /// An image to paint inside the shape (clipped to its outline).
+  ///
+  /// The image is drawn over the [color] or [gradient].
+  final DecorationImage? image;
+
+  /// A list of shadows cast by the [border].
+  final List<BoxShadow>? shadows;
+
+  /// A gradient to use when filling the shape.
+  ///
+  /// The gradient is under the [image].
+  ///
+  /// If a [color] is specified, [gradient] must be null.
+  final Gradient? gradient;
 
   /// A border to draw above the background [color]
   final OutlinedBorder? border;
@@ -248,8 +278,11 @@ class WxBox extends StatelessWidget {
 
     result = DecoratedBox(
       decoration: ShapeDecoration(
-        color: color,
         shape: effectiveBorderShape,
+        color: color,
+        shadows: shadows,
+        gradient: gradient,
+        image: image,
       ),
       child: result,
     );

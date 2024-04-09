@@ -14,6 +14,9 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.constraints,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.alignment,
     this.color,
     this.elevationColor,
@@ -38,6 +41,9 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.constraints,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.alignment,
     this.color,
     this.elevationColor,
@@ -64,6 +70,9 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.constraints,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.alignment,
     this.color,
     this.elevationColor,
@@ -87,6 +96,9 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.constraints,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.alignment,
     this.color,
     this.elevationColor,
@@ -113,6 +125,9 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.constraints,
     this.padding,
     this.margin,
+    this.image,
+    this.shadows,
+    this.gradient,
     this.alignment,
     this.color,
     this.elevationColor,
@@ -158,6 +173,21 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
 
   /// Outer space around the widget.
   final EdgeInsetsGeometry? margin;
+
+  /// An image to paint inside the shape (clipped to its outline).
+  ///
+  /// The image is drawn over the [color] or [gradient].
+  final DecorationImage? image;
+
+  /// A list of shadows cast by the [border].
+  final List<BoxShadow>? shadows;
+
+  /// A gradient to use when filling the shape.
+  ///
+  /// The gradient is under the [image].
+  ///
+  /// If a [color] is specified, [gradient] must be null.
+  final Gradient? gradient;
 
   /// The color to paint behind the [child].
   final Color? color;
@@ -226,16 +256,26 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
     );
   }
 
+  Decoration get decoration {
+    return ShapeDecoration(
+      shape: borderShape,
+      color: widget.color,
+      image: widget.image,
+      gradient: widget.gradient,
+      shadows: widget.shadows,
+    );
+  }
+
   Tween<double?>? widthTween;
   Tween<double?>? heightTween;
   BoxConstraintsTween? constraintsTween;
   AlignmentGeometryTween? alignmentTween;
   EdgeInsetsGeometryTween? paddingTween;
   EdgeInsetsGeometryTween? marginTween;
-  ColorTween? colorTween;
   ColorTween? elevationColorTween;
   Tween<double?>? elevationTween;
   ShapeBorderTween? borderShapeTween;
+  DecorationTween? decorationTween;
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
@@ -275,11 +315,11 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       (value) => EdgeInsetsGeometryTween(begin: value),
     ) as EdgeInsetsGeometryTween?;
 
-    colorTween = visitor(
-      colorTween,
-      widget.color,
-      (dynamic value) => ColorTween(begin: value),
-    ) as ColorTween?;
+    decorationTween = visitor(
+      decorationTween,
+      decoration,
+      (dynamic value) => DecorationTween(begin: value),
+    ) as DecorationTween;
 
     elevationColorTween = visitor(
       elevationColorTween,
@@ -302,6 +342,8 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
 
   @override
   Widget build(BuildContext context) {
+    final decorationValue =
+        decorationTween?.evaluate(animation) as ShapeDecoration?;
     return WxBox(
       width: widthTween?.evaluate(animation),
       height: heightTween?.evaluate(animation),
@@ -309,7 +351,10 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       alignment: alignmentTween?.evaluate(animation),
       padding: paddingTween?.evaluate(animation),
       margin: marginTween?.evaluate(animation),
-      color: colorTween?.evaluate(animation),
+      image: decorationValue?.image,
+      gradient: decorationValue?.gradient,
+      shadows: decorationValue?.shadows,
+      color: decorationValue?.color,
       elevationColor: elevationColorTween?.evaluate(animation),
       elevation: elevationTween?.evaluate(animation),
       border: borderShapeTween?.evaluate(animation) as OutlinedBorder,

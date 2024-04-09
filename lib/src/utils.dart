@@ -7,7 +7,7 @@ OutlinedBorder buildBorder({
   Color? borderColor,
   double? borderWidth,
   BorderStyle? borderStyle,
-  double? borderAlign,
+  double? borderOffset,
 }) {
   borderShape ??= const RoundedRectangleBorder();
   borderShape = borderShape.copyWith(
@@ -22,7 +22,7 @@ OutlinedBorder buildBorder({
           color: borderColor,
           width: borderWidth,
           style: borderStyle,
-          strokeAlign: borderAlign,
+          strokeAlign: borderOffset,
         ),
   );
 

@@ -21,7 +21,7 @@ class WxBox extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -45,7 +45,7 @@ class WxBox extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -72,7 +72,7 @@ class WxBox extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -96,7 +96,7 @@ class WxBox extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -123,7 +123,7 @@ class WxBox extends StatelessWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.elevationColor,
@@ -214,7 +214,7 @@ class WxBox extends StatelessWidget {
 
   /// The relative position of the stroke on a [BorderSide] in an
   /// [OutlinedBorder] or [Border].
-  final double? borderAlign;
+  final double? borderOffset;
 
   /// The border outline's color and weight.
   ///
@@ -273,7 +273,7 @@ class WxBox extends StatelessWidget {
       borderColor: borderColor,
       borderWidth: borderWidth,
       borderStyle: borderStyle,
-      borderAlign: borderAlign,
+      borderOffset: borderOffset,
     );
 
     result = DecoratedBox(
@@ -348,7 +348,7 @@ class WxBox extends StatelessWidget {
     properties.add(ColorProperty('borderColor', borderColor));
     properties.add(DoubleProperty('borderWidth', borderWidth));
     properties.add(EnumProperty<BorderStyle?>('borderStyle', borderStyle));
-    properties.add(DoubleProperty('borderAlign', borderAlign));
+    properties.add(DoubleProperty('borderOffset', borderOffset));
     properties.add(DiagnosticsProperty<BorderSide?>('borderSide', borderSide));
     properties
         .add(DiagnosticsProperty<BorderRadius?>('borderRadius', borderRadius));

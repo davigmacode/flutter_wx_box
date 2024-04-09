@@ -25,7 +25,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -51,7 +51,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -80,7 +80,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -106,7 +106,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -135,7 +135,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
     this.borderColor,
     this.borderWidth,
     this.borderStyle,
-    this.borderAlign,
+    this.borderOffset,
     this.borderSide,
     this.borderRadius,
     this.clipBehavior,
@@ -224,7 +224,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
 
   /// The relative position of the stroke on a [BorderSide] in an
   /// [OutlinedBorder] or [Border].
-  final double? borderAlign;
+  final double? borderOffset;
 
   /// The border outline's color and weight.
   ///
@@ -252,7 +252,7 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       borderColor: widget.borderColor,
       borderWidth: widget.borderWidth,
       borderStyle: widget.borderStyle,
-      borderAlign: widget.borderAlign,
+      borderOffset: widget.borderOffset,
     );
   }
 

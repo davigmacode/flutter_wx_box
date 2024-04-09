@@ -17,7 +17,7 @@ WxBox(
   width: 50,
   height: 50,
   elevation: 2,
-  shape: BoxShape.circle,
+  border: CircleBorder(),
 )
 
 WxBox.circle(
@@ -26,7 +26,7 @@ WxBox.circle(
   borderWidth: 5,
   borderStyle: BorderStyle.solid,
   borderColor: Theme.of(context).colorScheme.surface,
-  borderAlign: BorderSide.strokeAlignOutside,
+  borderOffset: BorderSide.strokeAlignOutside,
   alignment: Alignment.center,
   child: Text(
     '1',

@@ -1,3 +1,12 @@
+## 4.0.0
+
+* Fixed animated box losing border radius
+* Paint color using DecoratedBox, PhysicalModel or PhysicalShape only draw elevation
+* Paint border using DecoratedBox
+* Provides option to add image, shadows, or gradient
+* Renamed shadowColor to elevationColor, and improved box renderer
+* Renamed borderAlign to borderOffset
+
 ## 3.0.0
 
 * Removed WxBoxShape and `shape` property, use `border` instead.

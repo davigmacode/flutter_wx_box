@@ -368,5 +368,6 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
     super.debugFillProperties(properties);
     properties
         .add(DiagnosticsProperty<ShapeBorder>('borderShape', borderShape));
+    properties.add(DiagnosticsProperty<Decoration>('decoration', decoration));
   }
 }

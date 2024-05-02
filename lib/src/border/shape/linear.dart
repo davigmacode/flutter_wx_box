@@ -1,0 +1,511 @@
+import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart';
+
+import 'outlined.dart';
+import 'basic.dart';
+import '../side.dart';
+import '../style.dart';
+
+/// Defines the relative size and alignment of one <WxLinearBorder> edge.
+///
+/// A [WxLinearBorder] defines a box outline as zero to four edges, each
+/// of which is rendered as a single line. The width and color of the
+/// lines is defined by [WxLinearBorder.side].
+///
+/// Each line's length is defined by [size], a value between 0.0 and 1.0
+/// (the default) which defines the length as a percentage of the
+/// length of a box edge.
+///
+/// When [size] is less than 1.0, the line is aligned within the
+/// available space according to [alignment], a value between -1.0 and
+/// 1.0.  The default is 0.0, which means centered, -1.0 means align on the
+/// "start" side, and 1.0 means align on the "end" side. The meaning of
+/// start and end depend on the current [TextDirection], see
+/// [Directionality].
+@immutable
+class WxLinearBorderSide extends WxBorderSide {
+  /// Defines one side of a [WxLinearBorder].
+  ///
+  /// The values of [size] and [alignment] must be between
+  /// 0.0 and 1.0, and -1.0 and 1.0 respectively.
+  const WxLinearBorderSide({
+    super.style,
+    super.color,
+    super.gradient,
+    super.width,
+    super.offset,
+    this.size,
+    this.alignment,
+  }) : assert(size == null || size >= 0.0 && size <= 1.0);
+
+  /// A hairline black border that is not rendered.
+  static const WxLinearBorderSide none = WxLinearBorderSide(width: 0.0);
+
+  /// Defines one side of a [WxLinearBorder].
+  ///
+  /// The values of [size] and [alignment] must be between
+  /// 0.0 and 1.0, and -1.0 and 1.0 respectively.
+  WxLinearBorderSide.fromAncestor({
+    WxBorderSide? side,
+    this.size,
+    this.alignment,
+  })  : assert(size == null || size >= 0.0 && size <= 1.0),
+        super(
+          style: side?.style,
+          color: side?.color,
+          gradient: side?.gradient,
+          width: side?.width,
+          offset: side?.offset,
+        );
+
+  WxLinearBorderSide.fromLegacy(
+    BorderSide side, {
+    this.size,
+    this.alignment,
+  })  : assert(size == null || size >= 0.0 && size <= 1.0),
+        super.fromLegacy(side);
+
+  /// A value between 0.0 and 1.0 that defines the length of the edge as a
+  /// percentage of the length of the corresponding box
+  /// edge. Default is 1.0.
+  final double? size;
+
+  /// A value between -1.0 and 1.0 that defines how edges for which [size]
+  /// is less than 1.0 are aligned relative to the corresponding box edge.
+  ///
+  ///  * -1.0, aligned in the "start" direction. That's left
+  ///    for [TextDirection.ltr] and right for [TextDirection.rtl].
+  ///  * 0.0, centered.
+  ///  * 1.0, aligned in the "end" direction. That's right
+  ///    for [TextDirection.ltr] and left for [TextDirection.rtl].
+  final double? alignment;
+
+  double get effectiveSize => size ?? 1.0;
+
+  double get effectiveAlignment => alignment ?? 0.0;
+
+  /// Creates a copy of this border but with the given fields replaced with the new values.
+  @override
+  WxLinearBorderSide copyWith({
+    WxBorderStyle? style,
+    Color? color,
+    Gradient? gradient,
+    double? width,
+    double? offset,
+    double? size,
+    double? alignment,
+  }) {
+    return WxLinearBorderSide.fromAncestor(
+      side: super.copyWith(
+        style: style,
+        color: color,
+        gradient: gradient,
+        width: width,
+        offset: offset,
+      ),
+      size: size ?? this.size,
+      alignment: alignment ?? this.alignment,
+    );
+  }
+
+  @override
+  WxLinearBorderSide merge(covariant WxLinearBorderSide? other) {
+    // if null return current object
+    if (other == null) return this;
+
+    return copyWith(
+      style: other.style,
+      color: other.color,
+      gradient: other.gradient,
+      width: other.width,
+      offset: other.offset,
+      size: other.size,
+      alignment: other.alignment,
+    );
+  }
+
+  /// Creates a copy of this border side description but with the width scaled
+  /// by the factor `t`.
+  ///
+  /// The `t` argument represents the multiplicand, or the position on the
+  /// timeline for an interpolation from nothing to `this`, with 0.0 meaning
+  /// that the object returned should be the nil variant of this object, 1.0
+  /// meaning that no change should be applied, returning `this` (or something
+  /// equivalent to `this`), and other values meaning that the object should be
+  /// multiplied by `t`. Negative values are treated like zero.
+  ///
+  /// Since a zero width is normally painted as a hairline width rather than no
+  /// border at all, the zero factor is special-cased to instead change the
+  /// style to [BorderStyle.none].
+  ///
+  /// Values for `t` are usually obtained from an [Animation<double>], such as
+  /// an [AnimationController].
+  @override
+  WxLinearBorderSide scale(double t) {
+    return copyWith(
+      width: math.max(0.0, effectiveWidth * t),
+    );
+  }
+
+  /// Linearly interpolates between two [WxLinearBorder]s.
+  ///
+  /// If both `a` and `b` are null then null is returned. If `a` is null
+  /// then we interpolate to `b` varying [size] from 0.0 to `b.size`. If `b`
+  /// is null then we interpolate from `a` varying size from `a.size` to zero.
+  /// Otherwise both values are interpolated.
+  static WxLinearBorderSide? lerp(
+    WxLinearBorderSide? a,
+    WxLinearBorderSide? b,
+    double t,
+  ) {
+    if (identical(a, b)) {
+      return a;
+    }
+    if (t == 0.0) {
+      return a;
+    }
+    if (t == 1.0) {
+      return b;
+    }
+
+    return WxLinearBorderSide(
+      color: Color.lerp(a?.color, b?.color, t),
+      gradient: Gradient.lerp(a?.gradient, b?.gradient, t),
+      width: lerpDouble(a?.width, b?.width, t),
+      offset: lerpDouble(a?.offset, b?.offset, t),
+      size: lerpDouble(a?.size, b?.size, t),
+      alignment: lerpDouble(a?.alignment, b?.alignment, t),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is WxLinearBorderSide &&
+        other.size == size &&
+        other.alignment == alignment;
+  }
+
+  @override
+  int get hashCode => Object.hash(size, alignment);
+
+  @override
+  String toStringShort() {
+    final StringBuffer s =
+        StringBuffer('${objectRuntimeType(this, 'WxLinearBorderSide')}(');
+    if (size != 1.0) {
+      s.write('size: $size');
+    }
+    if (alignment != 0) {
+      final String comma = size != 1.0 ? ', ' : '';
+      s.write('${comma}alignment: $alignment');
+    }
+    s.write(')');
+    return s.toString();
+  }
+}
+
+/// An [WxOutlinedBorder] like [BoxBorder] that allows one to define a rectangular (box) border
+/// in terms of zero to four [WxLinearBorderSide]s, each of which is rendered as a single line.
+///
+/// The color and width of each line are defined by [side]. When [WxLinearBorder] is used
+/// with a class whose border sides and shape are defined by a [ButtonStyle], then a non-null
+/// [ButtonStyle.side] will override the one specified here. For example the [WxLinearBorder]
+/// in the [TextButton] example below adds a red underline to the button. This is because
+/// TextButton's `side` parameter overrides the `side` property of its [ButtonStyle.shape].
+///
+/// ```dart
+///  TextButton(
+///    style: TextButton.styleFrom(
+///      side: const WxBorderSide(color: Colors.red),
+///      shape: const WxLinearBorder(
+///        side: WxBorderSide(color: Colors.blue),
+///        bottom: WxLinearBorderSide(),
+///      ),
+///    ),
+///    onPressed: () { },
+///    child: const Text('Red WxLinearBorder'),
+///  )
+///```
+///
+/// This class resolves itself against the current [TextDirection] (see [Directionality]).
+/// Start and end values resolve to left and right for [TextDirection.ltr] and to
+/// right and left for [TextDirection.rtl].
+///
+/// Convenience constructors are included for the common case where just one edge is specified:
+/// [WxLinearBorder.start], [WxLinearBorder.end], [WxLinearBorder.top], [WxLinearBorder.bottom].
+class WxLinearBorder extends WxOutlinedBorder {
+  /// Creates a rectangular box border that's rendered as zero to four lines.
+  const WxLinearBorder({
+    super.side,
+    this.start,
+    this.end,
+    this.top,
+    this.bottom,
+  });
+
+  /// Creates a rectangular box border with an edge on the left for [TextDirection.ltr]
+  /// or on the right for [TextDirection.rtl].
+  WxLinearBorder.start({super.side, double alignment = 0.0, double size = 1.0})
+      : start = WxLinearBorderSide(alignment: alignment, size: size),
+        end = null,
+        top = null,
+        bottom = null;
+
+  /// Creates a rectangular box border with an edge on the right for [TextDirection.ltr]
+  /// or on the left for [TextDirection.rtl].
+  WxLinearBorder.end({super.side, double alignment = 0.0, double size = 1.0})
+      : start = null,
+        end = WxLinearBorderSide(alignment: alignment, size: size),
+        top = null,
+        bottom = null;
+
+  /// Creates a rectangular box border with an edge on the top.
+  WxLinearBorder.top({super.side, double alignment = 0.0, double size = 1.0})
+      : start = null,
+        end = null,
+        top = WxLinearBorderSide(alignment: alignment, size: size),
+        bottom = null;
+
+  /// Creates a rectangular box border with an edge on the bottom.
+  WxLinearBorder.bottom({super.side, double alignment = 0.0, double size = 1.0})
+      : start = null,
+        end = null,
+        top = null,
+        bottom = WxLinearBorderSide(alignment: alignment, size: size);
+
+  /// No border.
+  static const WxLinearBorder none = WxLinearBorder(side: WxBorderSide.none);
+
+  /// Defines the left edge for [TextDirection.ltr] or the right
+  /// for [TextDirection.rtl].
+  final WxLinearBorderSide? start;
+
+  /// Defines the right edge for [TextDirection.ltr] or the left
+  /// for [TextDirection.rtl].
+  final WxLinearBorderSide? end;
+
+  /// Defines the top edge.
+  final WxLinearBorderSide? top;
+
+  /// Defines the bottom edge.
+  final WxLinearBorderSide? bottom;
+
+  @override
+  WxLinearBorderSide get effectiveSide =>
+      WxLinearBorderSide.fromAncestor(side: super.effectiveSide);
+
+  WxLinearBorderSide get effectiveStart => effectiveSide.merge(start);
+  WxLinearBorderSide get effectiveEnd => effectiveSide.merge(end);
+  WxLinearBorderSide get effectiveTop => effectiveSide.merge(top);
+  WxLinearBorderSide get effectiveBottom => effectiveSide.merge(bottom);
+
+  @override
+  WxLinearBorder scale(double t) {
+    return WxLinearBorder(
+      start: start?.scale(t),
+      end: end?.scale(t),
+      top: top?.scale(t),
+      bottom: bottom?.scale(t),
+    );
+  }
+
+  @override
+  EdgeInsetsGeometry get dimensions {
+    return EdgeInsetsDirectional.fromSTEB(
+      effectiveStart.effectiveWidth,
+      effectiveTop.effectiveWidth,
+      effectiveEnd.effectiveWidth,
+      effectiveBottom.effectiveWidth,
+    );
+  }
+
+  @override
+  WxShapeBorder? lerpFrom(WxShapeBorder? a, double t) {
+    if (a is WxLinearBorder) {
+      return WxLinearBorder(
+        start: WxLinearBorderSide.lerp(a.start, start, t),
+        end: WxLinearBorderSide.lerp(a.end, end, t),
+        top: WxLinearBorderSide.lerp(a.top, top, t),
+        bottom: WxLinearBorderSide.lerp(a.bottom, bottom, t),
+      );
+    }
+    return super.lerpFrom(a, t);
+  }
+
+  @override
+  WxShapeBorder? lerpTo(WxShapeBorder? b, double t) {
+    if (b is WxLinearBorder) {
+      return WxLinearBorder(
+        side: WxBorderSide.lerp(side, b.side, t),
+        start: WxLinearBorderSide.lerp(start, b.start, t),
+        end: WxLinearBorderSide.lerp(end, b.end, t),
+        top: WxLinearBorderSide.lerp(top, b.top, t),
+        bottom: WxLinearBorderSide.lerp(bottom, b.bottom, t),
+      );
+    }
+    return super.lerpTo(b, t);
+  }
+
+  /// Returns a copy of this WxLinearBorder with the given fields replaced with
+  /// the new values.
+  @override
+  WxLinearBorder copyWith({
+    WxBorderSide? side,
+    WxLinearBorderSide? start,
+    WxLinearBorderSide? end,
+    WxLinearBorderSide? top,
+    WxLinearBorderSide? bottom,
+  }) {
+    return WxLinearBorder(
+      side: side ?? this.side,
+      start: start ?? this.start,
+      end: end ?? this.end,
+      top: top ?? this.top,
+      bottom: bottom ?? this.bottom,
+    );
+  }
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
+    final Rect adjustedRect =
+        dimensions.resolve(textDirection).deflateRect(rect);
+    return Path()..addRect(adjustedRect);
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
+    return Path()..addRect(rect);
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
+    final EdgeInsets insets = dimensions.resolve(textDirection);
+    final bool rtl = textDirection == TextDirection.rtl;
+
+    final Path path = Path();
+    final Paint paint = Paint()..strokeWidth = 0.0;
+
+    void drawEdge(Rect rect, Color color) {
+      paint.color = color;
+      path.reset();
+      path.moveTo(rect.left, rect.top);
+      if (rect.width == 0.0) {
+        // paint.style = PaintingStyle.stroke;
+        // path.lineTo(rect.left, rect.bottom);
+      } else if (rect.height == 0.0) {
+        // paint.style = PaintingStyle.stroke;
+        // path.lineTo(rect.right, rect.top);
+      } else {
+        paint.style = PaintingStyle.fill;
+        path.lineTo(rect.right, rect.top);
+        path.lineTo(rect.right, rect.bottom);
+        path.lineTo(rect.left, rect.bottom);
+      }
+      canvas.drawPath(path, paint);
+    }
+
+    if (effectiveStart.effectiveSize > 0.0) {
+      final Rect insetRect = Rect.fromLTWH(
+        rect.left,
+        rect.top + insets.top,
+        rect.width,
+        rect.height - insets.vertical,
+      );
+      final double x = rtl ? rect.right - insets.right : rect.left;
+      final double width = rtl ? insets.right : insets.left;
+      final double height = insetRect.height * effectiveStart.effectiveSize;
+      final double y = (insetRect.height - height) *
+          ((effectiveStart.effectiveAlignment + 1.0) / 2.0);
+      final Rect r = Rect.fromLTWH(x, y, width, height);
+      drawEdge(r, effectiveStart.effectiveColor);
+    }
+
+    if (effectiveEnd.effectiveSize > 0.0) {
+      final Rect insetRect = Rect.fromLTWH(
+        rect.left,
+        rect.top + insets.top,
+        rect.width,
+        rect.height - insets.vertical,
+      );
+      final double x = rtl ? rect.left : rect.right - insets.right;
+      final double width = rtl ? insets.left : insets.right;
+      final double height = insetRect.height * effectiveEnd.effectiveSize;
+      final double y = (insetRect.height - height) *
+          ((effectiveEnd.effectiveAlignment + 1.0) / 2.0);
+      final Rect r = Rect.fromLTWH(x, y, width, height);
+      drawEdge(r, effectiveEnd.effectiveColor);
+    }
+
+    if (effectiveTop.effectiveSize > 0.0) {
+      final double width = rect.width * effectiveTop.effectiveSize;
+      final double startX = (rect.width - width) *
+          ((effectiveTop.effectiveAlignment + 1.0) / 2.0);
+      final double x = rtl ? rect.width - startX - width : startX;
+      final Rect r = Rect.fromLTWH(x, rect.top, width, insets.top);
+      drawEdge(r, effectiveTop.effectiveColor);
+    }
+
+    if (effectiveBottom.effectiveSize > 0.0) {
+      final double width = rect.width * effectiveBottom.effectiveSize;
+      final double startX = (rect.width - width) *
+          ((effectiveBottom.effectiveAlignment + 1.0) / 2.0);
+      final double x = rtl ? rect.width - startX - width : startX;
+      final Rect r = Rect.fromLTWH(x, rect.bottom - insets.bottom, width,
+          effectiveBottom.effectiveWidth);
+      drawEdge(r, effectiveBottom.effectiveColor);
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is WxLinearBorder &&
+        other.side == side &&
+        other.start == start &&
+        other.end == end &&
+        other.top == top &&
+        other.bottom == bottom;
+  }
+
+  @override
+  int get hashCode => Object.hash(side, start, end, top, bottom);
+
+  @override
+  String toString() {
+    if (this == WxLinearBorder.none) {
+      return 'WxLinearBorder.none';
+    }
+
+    final StringBuffer s = StringBuffer(
+        '${objectRuntimeType(this, 'WxLinearBorder')}(side: $side');
+
+    if (start != null) {
+      s.write(', start: $start');
+    }
+    if (end != null) {
+      s.write(', end: $end');
+    }
+    if (top != null) {
+      s.write(', top: $top');
+    }
+    if (bottom != null) {
+      s.write(', bottom: $bottom');
+    }
+    s.write(')');
+    return s.toString();
+  }
+}

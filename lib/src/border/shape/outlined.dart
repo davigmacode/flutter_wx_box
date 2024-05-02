@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import 'basic.dart';
-import '../border/side.dart';
+import '../side.dart';
 
 /// A WxShapeBorder that draws an outline with the width and color specified
 /// by [side].
@@ -20,18 +20,20 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
   ///
   /// The value of [side] must not be null.
   const WxOutlinedBorder({
-    this.side = WxBorderSide.none,
+    this.side,
   });
 
   @override
   EdgeInsetsGeometry get dimensions =>
-      EdgeInsets.all(math.max(side.strokeInset, 0));
+      EdgeInsets.all(math.max(effectiveSide.strokeInset, 0));
 
   /// The border outline's color and weight.
   ///
   /// If [side] is [WxBorderSide.none], which is the default, an outline is not drawn.
   /// Otherwise the outline is centered over the shape's boundary.
-  final WxBorderSide side;
+  final WxBorderSide? side;
+
+  WxBorderSide get effectiveSide => side ?? WxBorderSide.none;
 
   /// Returns a copy of this OutlinedBorder that draws its outline with the
   /// specified [side], if [side] is non-null.
@@ -41,14 +43,16 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
     final Path dest = Path();
     for (final PathMetric metric in source.computeMetrics()) {
       int index = 0;
-      double distance = side.style.offset * metric.length;
+      double distance = effectiveSide.effectiveStyle.offset * metric.length;
       bool draw = true;
       while (distance < metric.length) {
-        if (index >= side.style.pattern.length) {
+        if (index >= effectiveSide.effectiveStyle.pattern.length) {
           index = 0;
         }
-        final double mul = side.style.absolute ? 1 : side.width;
-        final double len = side.style.pattern[index++] * mul;
+        final double mul = effectiveSide.effectiveStyle.absolute
+            ? 1
+            : effectiveSide.effectiveWidth;
+        final double len = effectiveSide.effectiveStyle.pattern[index++] * mul;
         if (draw) {
           dest.addPath(
             metric.extractPath(distance, distance + len),

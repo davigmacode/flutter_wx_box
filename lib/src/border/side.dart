@@ -13,20 +13,27 @@ class WxBorderSide with Diagnosticable {
   ///
   /// By default, the border is 1.0 logical pixels wide and solid black.
   const WxBorderSide({
-    this.style = WxBorderStyle.solid,
-    this.color = const Color(0xFF000000),
+    this.style,
+    this.color,
     this.gradient,
-    this.width = 1.0,
-    this.offset = alignInside,
+    this.width,
+    this.offset,
   });
+
+  WxBorderSide.fromLegacy(BorderSide side)
+      : style = null,
+        gradient = null,
+        color = side.color,
+        width = side.style == BorderStyle.none ? 0 : side.width,
+        offset = side.strokeAlign;
 
   /// A hairline black border that is not rendered.
   static const WxBorderSide none = WxBorderSide(width: 0.0);
 
-  final WxBorderStyle style;
+  final WxBorderStyle? style;
 
   /// The color of this side of the border.
-  final Color color;
+  final Color? color;
 
   final Gradient? gradient;
 
@@ -39,7 +46,7 @@ class WxBorderSide with Diagnosticable {
   /// double-hit pixels, giving it a slightly darker/lighter result.
   ///
   /// To omit the border entirely, set the [style] to [BorderStyle.none].
-  final double width;
+  final double? width;
 
   /// The relative position of the stroke on a [WxBorderSide] in an
   /// [OutlinedBorder] or [Border].
@@ -63,7 +70,7 @@ class WxBorderSide with Diagnosticable {
   /// cannot represent it); it is intended that classes that use [WxBorderSide]
   /// objects implement this property when painting borders by suitably
   /// inflating or deflating their regions.
-  final double offset;
+  final double? offset;
 
   /// The border is drawn fully inside of the border path.
   ///
@@ -83,6 +90,14 @@ class WxBorderSide with Diagnosticable {
   ///
   /// This is a constant for use with [offset].
   static const double alignOutside = 1.0;
+
+  WxBorderStyle get effectiveStyle => style ?? WxBorderStyle.solid;
+
+  Color get effectiveColor => color ?? const Color(0xFF000000);
+
+  double get effectiveWidth => width ?? 1;
+
+  double get effectiveOffset => offset ?? alignInside;
 
   /// Creates a copy of this border but with the given fields replaced with the new values.
   WxBorderSide copyWith({
@@ -119,7 +134,7 @@ class WxBorderSide with Diagnosticable {
   /// an [AnimationController].
   WxBorderSide scale(double t) {
     return copyWith(
-      width: math.max(0.0, width * t),
+      width: math.max(0.0, effectiveWidth * t),
     );
   }
 
@@ -134,19 +149,8 @@ class WxBorderSide with Diagnosticable {
   /// border sides as filled shapes rather than using a stroke.
   Paint toPaint(Rect rect) {
     return Paint()
-      ..color = color
+      ..color = effectiveColor
       ..shader = gradient?.createShader(rect);
-  }
-
-  /// Whether the two given [WxBorderSide]s can be merged using
-  /// [WxBorderSide.merge].
-  ///
-  /// Two sides can be merged if one or both are zero-width with
-  /// [BorderStyle.none], or if they both have the same color and style.
-  ///
-  /// The arguments must not be null.
-  static bool canMerge(WxBorderSide a, WxBorderSide b) {
-    return a.color == b.color;
   }
 
   /// Creates a [WxBorderSide] that represents the addition of the two given
@@ -160,13 +164,16 @@ class WxBorderSide with Diagnosticable {
   /// [BorderStyle.none], then [WxBorderSide.none] is returned.
   ///
   /// The arguments must not be null.
-  static WxBorderSide merge(WxBorderSide a, WxBorderSide b) {
-    assert(a.color == b.color);
-    return WxBorderSide(
-      color: a.color, // == b.color
-      gradient: a.gradient,
-      width: a.width + b.width,
-      offset: math.max(a.offset, b.offset),
+  WxBorderSide merge(WxBorderSide? other) {
+    // if null return current object
+    if (other == null) return this;
+
+    return copyWith(
+      style: other.style,
+      color: other.color,
+      gradient: other.gradient,
+      width: other.width,
+      offset: other.offset,
     );
   }
 
@@ -175,7 +182,7 @@ class WxBorderSide with Diagnosticable {
   /// The arguments must not be null.
   ///
   /// {@macro dart.ui.shadow.lerp}
-  static WxBorderSide lerp(WxBorderSide a, WxBorderSide b, double t) {
+  static WxBorderSide? lerp(WxBorderSide? a, WxBorderSide? b, double t) {
     if (identical(a, b)) {
       return a;
     }
@@ -186,33 +193,33 @@ class WxBorderSide with Diagnosticable {
       return b;
     }
     return WxBorderSide(
-      style: WxBorderStyle.lerp(a.style, b.style, t)!,
-      color: Color.lerp(a.color, b.color, t)!,
-      gradient: Gradient.lerp(a.gradient, b.gradient, t),
-      width: lerpDouble(a.width, b.width, t)!,
-      offset: lerpDouble(a.offset, b.offset, t)!, // == b.strokeAlign
+      style: WxBorderStyle.lerp(a?.style, b?.style, t),
+      color: Color.lerp(a?.color, b?.color, t),
+      gradient: Gradient.lerp(a?.gradient, b?.gradient, t),
+      width: lerpDouble(a?.width, b?.width, t),
+      offset: lerpDouble(a?.offset, b?.offset, t), // == b.strokeAlign
     );
   }
 
   /// Get the amount of the stroke width that lies inside of the [WxBorderSide].
   ///
-  /// For example, this will return the [width] for a [offset] of -1, half
-  /// the [width] for a [offset] of 0, and 0 for a [offset] of 1.
-  double get strokeInset => width * (1 - (1 + offset) / 2);
+  /// For example, this will return the [effectiveWidth] for a [offset] of -1, half
+  /// the [effectiveWidth] for a [offset] of 0, and 0 for a [offset] of 1.
+  double get strokeInset => effectiveWidth * (1 - (1 + effectiveOffset) / 2);
 
   /// Get the amount of the stroke width that lies outside of the [WxBorderSide].
   ///
   /// For example, this will return 0 for a [offset] of -1, half the
-  /// [width] for a [offset] of 0, and the [width] for a [offset]
+  /// [effectiveWidth] for a [offset] of 0, and the [effectiveWidth] for a [offset]
   /// of 1.
-  double get strokeOutset => width * (1 + offset) / 2;
+  double get strokeOutset => effectiveWidth * (1 + effectiveOffset) / 2;
 
   /// The offset of the stroke, taking into account the stroke alignment.
   ///
-  /// For example, this will return the negative [width] of the stroke
-  /// for a [offset] of -1, 0 for a [offset] of 0, and the
-  /// [width] for a [offset] of -1.
-  double get strokeOffset => width * offset;
+  /// For example, this will return the negative [effectiveWidth] of the stroke
+  /// for a [effectiveOffset] of -1, 0 for a [effectiveOffset] of 0, and the
+  /// [effectiveWidth] for a [effectiveOffset] of -1.
+  double get strokeOffset => effectiveWidth * effectiveOffset;
 
   @override
   bool operator ==(Object other) {

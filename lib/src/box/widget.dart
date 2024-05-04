@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import '../utils.dart';
+import 'utils.dart';
 
 /// Const widget that provides a box-like layout with customizable elevation
 class WxBox extends StatelessWidget {

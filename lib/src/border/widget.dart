@@ -1,31 +1,22 @@
-import 'package:flutter/widgets.dart';
-import 'shape/outlined.dart';
-import 'clipper.dart';
-
-enum WxBorderPosition {
-  foreground,
-  background;
-
-  bool get isForeground => name == 'foreground';
-
-  bool get isBackground => name == 'background';
-}
+import 'package:flutter/material.dart';
 
 class WxBorder extends StatelessWidget {
   const WxBorder({
     super.key,
-    this.position = WxBorderPosition.foreground,
+    this.isBackground = false,
     this.clipBehavior = Clip.none,
     this.textDirection,
     required this.shape,
     this.child,
   });
 
-  final WxBorderPosition position;
+  final bool isBackground;
   final Clip clipBehavior;
   final TextDirection? textDirection;
-  final WxOutlinedBorder shape;
+  final ShapeBorder shape;
   final Widget? child;
+
+  bool get isForeground => !isBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +24,12 @@ class WxBorder extends StatelessWidget {
         textDirection ?? Directionality.maybeOf(context);
     final painter = WxBorderPainter(shape, effectiveTextDirection);
     return CustomPaint(
-      painter: position.isBackground ? null : painter,
-      foregroundPainter: position.isForeground ? painter : null,
+      painter: isBackground ? null : painter,
+      foregroundPainter: isForeground ? painter : null,
       child: clipBehavior != Clip.none
           ? ClipPath(
               clipBehavior: clipBehavior,
-              clipper: WxShapeBorderClipper(
+              clipper: ShapeBorderClipper(
                 shape: shape,
                 textDirection: effectiveTextDirection,
               ),
@@ -54,16 +45,13 @@ class WxBorderPainter extends CustomPainter {
     this.shape,
     this.textDirection,
   );
-  final WxOutlinedBorder shape;
+  final ShapeBorder shape;
   final TextDirection? textDirection;
 
   @override
   void paint(Canvas canvas, Size size) {
-    shape.paint(
-      canvas,
-      Offset.zero & size,
-      textDirection: textDirection,
-    );
+    final rect = Offset.zero & size;
+    shape.paint(canvas, rect, textDirection: textDirection);
   }
 
   @override

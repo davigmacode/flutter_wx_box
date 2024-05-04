@@ -17,7 +17,7 @@ class WxShapeBorderClipper extends CustomClipper<Path> {
   });
 
   /// The shape border whose outer path this clipper clips to.
-  final WxShapeBorder shape;
+  final ShapeBorder shape;
 
   /// The text direction to use for getting the outer path for [shape].
   ///

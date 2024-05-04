@@ -5,20 +5,11 @@ import 'outlined.dart';
 import '../side.dart';
 import '../style.dart';
 
-/// A rectangular border with rounded corners.
-///
-/// This shape can interpolate to and from [CircleBorder].
-///
-/// See also:
-///
-///  * [WxBorderSide], which is used to describe each side of the box.
-///  * [Border], which, when used with [BoxDecoration], can also
-///    describe a rounded rectangle.
-class WxRoundedRectangleBorder extends WxOutlinedBorder {
-  /// Creates a rounded rectangle border.
+class WxRectangleBorder extends WxOutlinedBorder {
+  /// Creates a rectangle border.
   ///
   /// The arguments must not be null.
-  const WxRoundedRectangleBorder({
+  const WxRectangleBorder({
     super.side,
     super.color,
     super.gradient,
@@ -32,6 +23,9 @@ class WxRoundedRectangleBorder extends WxOutlinedBorder {
   final BorderRadiusGeometry corners;
 
   @override
+  bool get preferPaintInterior => true;
+
+  @override
   ShapeBorder scale(double t) {
     return copyWith(
       side: effectiveSide.scale(t),
@@ -39,27 +33,26 @@ class WxRoundedRectangleBorder extends WxOutlinedBorder {
     );
   }
 
-  /// Returns a copy of this WxRoundedRectangleBorder with the given fields
-  /// replaced with the new values.
   @override
-  WxRoundedRectangleBorder copyWith({
-    WxBorderSide? side,
-    WxBorderStyle? style,
-    Color? color,
-    Gradient? gradient,
-    double? width,
-    double? offset,
-    BorderRadiusGeometry? corners,
-  }) {
-    return WxRoundedRectangleBorder(
-      side: side ?? this.side,
-      style: style ?? this.style,
-      color: color ?? this.color,
-      gradient: gradient ?? this.gradient,
-      width: width ?? this.width,
-      offset: offset ?? this.offset,
-      corners: corners ?? this.corners,
-    );
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
+    if (a is WxRectangleBorder) {
+      return a.copyWith(
+        side: WxBorderSide.lerp(a.side, side, t),
+        corners: BorderRadiusGeometry.lerp(a.corners, corners, t)!,
+      );
+    }
+    return super.lerpFrom(a, t);
+  }
+
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
+    if (b is WxRectangleBorder) {
+      return b.copyWith(
+        side: WxBorderSide.lerp(side, b.side, t),
+        corners: BorderRadiusGeometry.lerp(corners, b.corners, t)!,
+      );
+    }
+    return super.lerpTo(b, t);
   }
 
   @override
@@ -87,9 +80,6 @@ class WxRoundedRectangleBorder extends WxOutlinedBorder {
       canvas.drawRRect(corners.resolve(textDirection).toRRect(rect), paint);
     }
   }
-
-  @override
-  bool get preferPaintInterior => true;
 
   @override
   void paint(
@@ -121,12 +111,35 @@ class WxRoundedRectangleBorder extends WxOutlinedBorder {
     }
   }
 
+  /// Returns a copy of this WxRoundedRectangleBorder with the given fields
+  /// replaced with the new values.
+  @override
+  WxRectangleBorder copyWith({
+    WxBorderSide? side,
+    WxBorderStyle? style,
+    Color? color,
+    Gradient? gradient,
+    double? width,
+    double? offset,
+    BorderRadiusGeometry? corners,
+  }) {
+    return WxRectangleBorder(
+      side: side ?? this.side,
+      style: style ?? this.style,
+      color: color ?? this.color,
+      gradient: gradient ?? this.gradient,
+      width: width ?? this.width,
+      offset: offset ?? this.offset,
+      corners: corners ?? this.corners,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    return other is WxRoundedRectangleBorder &&
+    return other is WxRectangleBorder &&
         other.side == side &&
         other.style == style &&
         other.color == color &&
@@ -142,6 +155,6 @@ class WxRoundedRectangleBorder extends WxOutlinedBorder {
 
   @override
   String toString() {
-    return '${objectRuntimeType(this, 'WxRoundedRectangleBorder')}($side, $corners)';
+    return '${objectRuntimeType(this, 'WxRectangleBorder')}($effectiveSide, $corners)';
   }
 }

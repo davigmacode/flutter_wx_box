@@ -3,5 +3,7 @@ export 'side.dart';
 export 'style.dart';
 export 'shape/circle.dart';
 export 'shape/stadium.dart';
-export 'shape/rectangle_rounded.dart';
+export 'shape/rectangle_beveled.dart';
+export 'shape/rectangle_continuous.dart';
+export 'shape/rectangle.dart';
 export 'shape/linear.dart';

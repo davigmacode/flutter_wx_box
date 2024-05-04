@@ -116,6 +116,15 @@ class WxBorderSide with Diagnosticable {
     );
   }
 
+  BorderSide toLegacy() {
+    return BorderSide(
+      style: effectiveWidth > 0 ? BorderStyle.solid : BorderStyle.none,
+      color: effectiveColor,
+      width: effectiveWidth,
+      strokeAlign: effectiveOffset,
+    );
+  }
+
   /// Creates a copy of this border side description but with the width scaled
   /// by the factor `t`.
   ///
@@ -230,6 +239,7 @@ class WxBorderSide with Diagnosticable {
       return false;
     }
     return other is WxBorderSide &&
+        other.style == style &&
         other.color == color &&
         other.gradient == gradient &&
         other.width == width &&
@@ -237,7 +247,7 @@ class WxBorderSide with Diagnosticable {
   }
 
   @override
-  int get hashCode => Object.hash(color, gradient, width, offset);
+  int get hashCode => Object.hash(style, color, gradient, width, offset);
 
   @override
   String toStringShort() => 'BorderSide';

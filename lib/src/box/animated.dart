@@ -200,7 +200,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   final double? elevation;
 
   /// A border to draw above the background [color]
-  final OutlinedBorder? border;
+  final ShapeBorder? border;
 
   /// The color of this side of the border.
   final Color? borderColor;
@@ -236,7 +236,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   final BorderRadius? borderRadius;
 
   /// Controls how to clip.
-  /// Defaults to [Clip.antiAlias].
+  /// Defaults to [Clip.none].
   final Clip? clipBehavior;
 
   @override
@@ -357,7 +357,7 @@ class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
       color: decorationValue?.color,
       elevationColor: elevationColorTween?.evaluate(animation),
       elevation: elevationTween?.evaluate(animation),
-      border: borderShapeTween?.evaluate(animation) as OutlinedBorder,
+      border: borderShapeTween?.evaluate(animation),
       clipBehavior: widget.clipBehavior,
       child: widget.child,
     );

@@ -190,7 +190,7 @@ class WxBox extends StatelessWidget {
   final Gradient? gradient;
 
   /// A border to draw above the background [color]
-  final OutlinedBorder? border;
+  final ShapeBorder? border;
 
   /// The color of this side of the border.
   final Color? borderColor;
@@ -346,7 +346,7 @@ class WxBox extends StatelessWidget {
     properties.add(ColorProperty('color', color));
     properties.add(ColorProperty('elevationColor', elevationColor));
     properties.add(DoubleProperty('elevation', elevation));
-    properties.add(DiagnosticsProperty<OutlinedBorder?>('border', border));
+    properties.add(DiagnosticsProperty<ShapeBorder?>('border', border));
     properties.add(ColorProperty('borderColor', borderColor));
     properties.add(DoubleProperty('borderWidth', borderWidth));
     properties.add(EnumProperty<BorderStyle?>('borderStyle', borderStyle));

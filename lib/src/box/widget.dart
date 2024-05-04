@@ -243,6 +243,30 @@ class WxBox extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? result = child;
 
+    final effectiveBorderShape = buildBorder(
+      borderShape: border,
+      borderRadius: borderRadius,
+      borderSide: borderSide,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      borderStyle: borderStyle,
+      borderOffset: borderOffset,
+    );
+
+    final textDirection = Directionality.maybeOf(context);
+    CustomClipper<Path> clipper = ShapeBorderClipper(
+      textDirection: textDirection,
+      shape: effectiveBorderShape,
+    );
+
+    if (effectiveClipBehavior != Clip.none) {
+      result = ClipPath(
+        clipper: clipper,
+        clipBehavior: effectiveClipBehavior,
+        child: result,
+      );
+    }
+
     final constraints = width != null || height != null
         ? this.constraints?.tighten(width: width, height: height) ??
             BoxConstraints.tightFor(width: width, height: height)
@@ -266,16 +290,6 @@ class WxBox extends StatelessWidget {
       result = ConstrainedBox(constraints: constraints, child: result);
     }
 
-    final effectiveBorderShape = buildBorder(
-      borderShape: border,
-      borderRadius: borderRadius,
-      borderSide: borderSide,
-      borderColor: borderColor,
-      borderWidth: borderWidth,
-      borderStyle: borderStyle,
-      borderOffset: borderOffset,
-    );
-
     result = DecoratedBox(
       decoration: ShapeDecoration(
         shape: effectiveBorderShape,
@@ -287,25 +301,13 @@ class WxBox extends StatelessWidget {
       child: result,
     );
 
-    final textDirection = Directionality.maybeOf(context);
-    CustomClipper<Path> clipper = ShapeBorderClipper(
-      textDirection: textDirection,
-      shape: effectiveBorderShape,
-    );
-
-    if (effectiveElevation == 0) {
-      result = ClipPath(
-        clipper: clipper,
-        clipBehavior: effectiveClipBehavior,
-        child: result,
-      );
-    } else {
+    if (effectiveElevation > 0) {
       if (effectiveBorderShape is RoundedRectangleBorder) {
         result = PhysicalModel(
           color: const Color(0x00000000),
           elevation: effectiveElevation,
           shadowColor: effectiveElevationColor,
-          clipBehavior: effectiveClipBehavior,
+          clipBehavior: Clip.none,
           borderRadius:
               effectiveBorderShape.borderRadius.resolve(textDirection),
           child: result,
@@ -315,7 +317,7 @@ class WxBox extends StatelessWidget {
           color: const Color(0x00000000),
           elevation: effectiveElevation,
           shadowColor: effectiveElevationColor,
-          clipBehavior: effectiveClipBehavior,
+          clipBehavior: Clip.none,
           clipper: clipper,
           child: result,
         );

@@ -1,7 +1,11 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import 'outlined.dart';
+import 'circle.dart';
+import 'rectangle_lerp.dart';
 import '../side.dart';
 import '../style.dart';
 
@@ -36,9 +40,22 @@ class WxRectangleBorder extends WxOutlinedBorder {
   @override
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is WxRectangleBorder) {
-      return a.copyWith(
+      return WxRectangleBorder(
         side: WxBorderSide.lerp(a.side, side, t),
+        style: WxBorderStyle.lerp(a.style, style, t),
+        color: Color.lerp(a.color, color, t),
+        gradient: Gradient.lerp(a.gradient, gradient, t),
+        width: lerpDouble(a.width, width, t),
+        offset: lerpDouble(a.offset, offset, t),
         corners: BorderRadiusGeometry.lerp(a.corners, corners, t)!,
+      );
+    }
+    if (a is WxCircleBorder) {
+      return WxRectangleToCircleBorder(
+        side: WxBorderSide.lerp(a.effectiveSide, effectiveSide, t),
+        corners: corners,
+        circularity: 1.0 - t,
+        eccentricity: a.eccentricity,
       );
     }
     return super.lerpFrom(a, t);
@@ -49,7 +66,20 @@ class WxRectangleBorder extends WxOutlinedBorder {
     if (b is WxRectangleBorder) {
       return b.copyWith(
         side: WxBorderSide.lerp(side, b.side, t),
+        style: WxBorderStyle.lerp(style, b.style, t),
+        color: Color.lerp(color, b.color, t),
+        gradient: Gradient.lerp(gradient, b.gradient, t),
+        width: lerpDouble(width, b.width, t),
+        offset: lerpDouble(offset, b.offset, t),
         corners: BorderRadiusGeometry.lerp(corners, b.corners, t)!,
+      );
+    }
+    if (b is WxCircleBorder) {
+      return WxRectangleToCircleBorder(
+        side: WxBorderSide.lerp(effectiveSide, b.effectiveSide, t),
+        corners: corners,
+        circularity: t,
+        eccentricity: b.eccentricity,
       );
     }
     return super.lerpTo(b, t);

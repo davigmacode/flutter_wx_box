@@ -58,7 +58,7 @@ class WxCircleBorder extends WxOutlinedBorder {
   ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is WxCircleBorder) {
       return WxCircleBorder(
-        side: WxBorderSide.lerp(a.side, side, t),
+        side: WxBorderSide.lerp(a.effectiveSide, effectiveSide, t),
         eccentricity: clampDouble(
             ui.lerpDouble(a.eccentricity, eccentricity, t)!, 0.0, 1.0),
       );
@@ -70,7 +70,7 @@ class WxCircleBorder extends WxOutlinedBorder {
   ShapeBorder? lerpTo(ShapeBorder? b, double t) {
     if (b is WxCircleBorder) {
       return WxCircleBorder(
-        side: WxBorderSide.lerp(side, b.side, t),
+        side: WxBorderSide.lerp(effectiveSide, b.effectiveSide, t),
         eccentricity: clampDouble(
             ui.lerpDouble(eccentricity, b.eccentricity, t)!, 0.0, 1.0),
       );

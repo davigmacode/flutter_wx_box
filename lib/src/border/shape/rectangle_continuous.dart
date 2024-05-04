@@ -125,15 +125,16 @@ class WxContinuousRectangleBorder extends WxRectangleBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    if (rect.isEmpty) {
-      return;
-    }
-    if (effectiveSide.effectiveWidth > 0) {
-      canvas.drawPath(
-        getOuterPath(rect, textDirection: textDirection),
-        effectiveSide.toPaint(rect),
-      );
-    }
+    if (rect.isEmpty) return;
+
+    final actualSide = effectiveSide;
+    final sideWidth = actualSide.effectiveWidth;
+    if (sideWidth == 0) return;
+    final paint = actualSide.toPaint(rect)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = sideWidth;
+    final path = getOuterPath(rect, textDirection: textDirection);
+    canvas.drawPath(path, paint);
   }
 
   @override

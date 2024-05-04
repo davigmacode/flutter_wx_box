@@ -101,17 +101,20 @@ class WxBeveledRectangleBorder extends WxRectangleBorder {
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection? textDirection}) {
-    if (rect.isEmpty) {
-      return;
-    }
-    if (effectiveSide.effectiveWidth > 0) {
-      final RRect borderRect = corners.resolve(textDirection).toRRect(rect);
-      final RRect adjustedRect = borderRect.inflate(effectiveSide.strokeOutset);
-      final Path path = _getPath(adjustedRect)
-        ..addPath(
-            getInnerPath(rect, textDirection: textDirection), Offset.zero);
-      canvas.drawPath(path, effectiveSide.toPaint(rect));
-    }
+    if (rect.isEmpty) return;
+
+    final actualSide = effectiveSide;
+    final sideWidth = actualSide.effectiveWidth;
+    if (sideWidth == 0) return;
+
+    final paint = actualSide.toPaint(rect)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = sideWidth;
+    final RRect borderRect = corners.resolve(textDirection).toRRect(rect);
+    final RRect adjustedRect = borderRect.inflate(actualSide.strokeOutset);
+    final innerPath = getInnerPath(rect, textDirection: textDirection);
+    final Path path = _getPath(adjustedRect)..addPath(innerPath, Offset.zero);
+    canvas.drawPath(path, paint);
   }
 
   @override

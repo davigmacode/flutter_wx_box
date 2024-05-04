@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import 'outlined.dart';
+import 'rectangle.dart';
+import 'circle.dart';
+import 'stadium_lerp.dart';
 import '../side.dart';
 import '../style.dart';
 
@@ -29,6 +32,54 @@ class WxStadiumBorder extends WxOutlinedBorder {
 
   @override
   ShapeBorder scale(double t) => WxStadiumBorder(side: effectiveSide.scale(t));
+
+  @override
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
+    if (a is WxStadiumBorder) {
+      return WxStadiumBorder(
+        side: WxBorderSide.lerp(a.effectiveSide, effectiveSide, t),
+      );
+    }
+    if (a is WxCircleBorder) {
+      return WxStadiumToCircleBorder(
+        side: WxBorderSide.lerp(a.effectiveSide, effectiveSide, t),
+        circularity: 1.0 - t,
+        eccentricity: a.eccentricity,
+      );
+    }
+    if (a is WxRectangleBorder) {
+      return WxStadiumToRectangleBorder(
+        side: WxBorderSide.lerp(a.effectiveSide, effectiveSide, t),
+        corners: a.corners,
+        rectilinearity: 1.0 - t,
+      );
+    }
+    return super.lerpFrom(a, t);
+  }
+
+  @override
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
+    if (b is WxStadiumBorder) {
+      return WxStadiumBorder(
+        side: WxBorderSide.lerp(effectiveSide, b.effectiveSide, t),
+      );
+    }
+    if (b is WxCircleBorder) {
+      return WxStadiumToCircleBorder(
+        side: WxBorderSide.lerp(effectiveSide, b.effectiveSide, t),
+        circularity: t,
+        eccentricity: b.eccentricity,
+      );
+    }
+    if (b is WxRectangleBorder) {
+      return WxStadiumToRectangleBorder(
+        side: WxBorderSide.lerp(effectiveSide, b.effectiveSide, t),
+        corners: b.corners,
+        rectilinearity: t,
+      );
+    }
+    return super.lerpTo(b, t);
+  }
 
   @override
   WxStadiumBorder copyWith({

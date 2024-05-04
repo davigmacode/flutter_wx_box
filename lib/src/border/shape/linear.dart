@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
 import 'outlined.dart';
-import 'basic.dart';
 import '../side.dart';
 import '../style.dart';
 
@@ -300,8 +299,10 @@ class WxLinearBorder extends WxOutlinedBorder {
   final WxLinearBorderSide? bottom;
 
   @override
-  WxLinearBorderSide get effectiveSide =>
-      WxLinearBorderSide.fromAncestor(side: super.effectiveSide);
+  WxLinearBorderSide get effectiveSide {
+    if (side is WxLinearBorderSide) return side as WxLinearBorderSide;
+    return WxLinearBorderSide.fromAncestor(side: super.effectiveSide);
+  }
 
   WxLinearBorderSide get effectiveStart => effectiveSide.merge(start);
   WxLinearBorderSide get effectiveEnd => effectiveSide.merge(end);
@@ -329,7 +330,7 @@ class WxLinearBorder extends WxOutlinedBorder {
   }
 
   @override
-  WxShapeBorder? lerpFrom(WxShapeBorder? a, double t) {
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a is WxLinearBorder) {
       return WxLinearBorder(
         start: WxLinearBorderSide.lerp(a.start, start, t),
@@ -342,7 +343,7 @@ class WxLinearBorder extends WxOutlinedBorder {
   }
 
   @override
-  WxShapeBorder? lerpTo(WxShapeBorder? b, double t) {
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
     if (b is WxLinearBorder) {
       return WxLinearBorder(
         side: WxBorderSide.lerp(side, b.side, t),
@@ -395,21 +396,13 @@ class WxLinearBorder extends WxOutlinedBorder {
     final Paint paint = Paint()..strokeWidth = 0.0;
 
     void drawEdge(Rect rect, Color color) {
+      paint.style = PaintingStyle.fill;
       paint.color = color;
       path.reset();
       path.moveTo(rect.left, rect.top);
-      if (rect.width == 0.0) {
-        // paint.style = PaintingStyle.stroke;
-        // path.lineTo(rect.left, rect.bottom);
-      } else if (rect.height == 0.0) {
-        // paint.style = PaintingStyle.stroke;
-        // path.lineTo(rect.right, rect.top);
-      } else {
-        paint.style = PaintingStyle.fill;
-        path.lineTo(rect.right, rect.top);
-        path.lineTo(rect.right, rect.bottom);
-        path.lineTo(rect.left, rect.bottom);
-      }
+      path.lineTo(rect.right, rect.top);
+      path.lineTo(rect.right, rect.bottom);
+      path.lineTo(rect.left, rect.bottom);
       canvas.drawPath(path, paint);
     }
 

@@ -8,20 +8,25 @@ import 'dart:ui' show PathMetric;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 
-import 'basic.dart';
 import '../side.dart';
+import '../style.dart';
 
 /// A WxShapeBorder that draws an outline with the width and color specified
 /// by [side].
 @immutable
-abstract class WxOutlinedBorder extends WxShapeBorder {
+abstract class WxOutlinedBorder extends ShapeBorder {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
   ///
   /// The value of [side] must not be null.
   const WxOutlinedBorder({
     this.side,
-  });
+    this.style,
+    this.color,
+    this.gradient,
+    this.width,
+    this.offset,
+  }) : assert(width == null || width >= 0);
 
   @override
   EdgeInsetsGeometry get dimensions =>
@@ -33,7 +38,24 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
   /// Otherwise the outline is centered over the shape's boundary.
   final WxBorderSide? side;
 
-  WxBorderSide get effectiveSide => side ?? WxBorderSide.none;
+  final WxBorderStyle? style;
+
+  /// The color of this side of the border.
+  final Color? color;
+
+  final Gradient? gradient;
+
+  final double? width;
+
+  final double? offset;
+
+  WxBorderSide get effectiveSide => (side ?? WxBorderSide.none).copyWith(
+        style: style,
+        color: color,
+        gradient: gradient,
+        width: width,
+        offset: offset,
+      );
 
   /// Returns a copy of this OutlinedBorder that draws its outline with the
   /// specified [side], if [side] is non-null.
@@ -41,18 +63,18 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
 
   Path getNonSolidPath(Path source, {TextDirection? textDirection}) {
     final Path dest = Path();
+    final sideStyle = effectiveSide.effectiveStyle;
+    final sideWidth = effectiveSide.effectiveWidth;
     for (final PathMetric metric in source.computeMetrics()) {
       int index = 0;
-      double distance = effectiveSide.effectiveStyle.offset * metric.length;
+      double distance = sideStyle.offset * metric.length;
       bool draw = true;
       while (distance < metric.length) {
-        if (index >= effectiveSide.effectiveStyle.pattern.length) {
+        if (index >= sideStyle.pattern.length) {
           index = 0;
         }
-        final double mul = effectiveSide.effectiveStyle.absolute
-            ? 1
-            : effectiveSide.effectiveWidth;
-        final double len = effectiveSide.effectiveStyle.pattern[index++] * mul;
+        final double mul = sideStyle.absolute ? 1 : sideWidth;
+        final double len = sideStyle.pattern[index++] * mul;
         if (draw) {
           dest.addPath(
             metric.extractPath(distance, distance + len),
@@ -68,10 +90,10 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
   }
 
   @override
-  WxShapeBorder scale(double t);
+  ShapeBorder scale(double t);
 
   @override
-  WxShapeBorder? lerpFrom(WxShapeBorder? a, double t) {
+  ShapeBorder? lerpFrom(ShapeBorder? a, double t) {
     if (a == null) {
       return scale(t);
     }
@@ -79,7 +101,7 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
   }
 
   @override
-  WxShapeBorder? lerpTo(WxShapeBorder? b, double t) {
+  ShapeBorder? lerpTo(ShapeBorder? b, double t) {
     if (b == null) {
       return scale(1.0 - t);
     }
@@ -102,7 +124,7 @@ abstract class WxOutlinedBorder extends WxShapeBorder {
     if (identical(a, b)) {
       return a;
     }
-    WxShapeBorder? result;
+    ShapeBorder? result;
     if (b != null) {
       result = b.lerpFrom(a, t);
     }

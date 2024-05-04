@@ -361,6 +361,11 @@ class WxLinearBorder extends WxOutlinedBorder {
   @override
   WxLinearBorder copyWith({
     WxBorderSide? side,
+    WxBorderStyle? style,
+    Color? color,
+    Gradient? gradient,
+    double? width,
+    double? offset,
     WxLinearBorderSide? start,
     WxLinearBorderSide? end,
     WxLinearBorderSide? top,

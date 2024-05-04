@@ -59,7 +59,14 @@ abstract class WxOutlinedBorder extends ShapeBorder {
 
   /// Returns a copy of this OutlinedBorder that draws its outline with the
   /// specified [side], if [side] is non-null.
-  WxOutlinedBorder copyWith({WxBorderSide? side});
+  WxOutlinedBorder copyWith({
+    WxBorderSide? side,
+    WxBorderStyle? style,
+    Color? color,
+    Gradient? gradient,
+    double? width,
+    double? offset,
+  });
 
   Path getNonSolidPath(Path source, {TextDirection? textDirection}) {
     final Path dest = Path();

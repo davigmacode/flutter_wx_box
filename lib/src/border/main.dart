@@ -7,3 +7,4 @@ export 'shape/rectangle_beveled.dart';
 export 'shape/rectangle_continuous.dart';
 export 'shape/rectangle.dart';
 export 'shape/linear.dart';
+export 'shape/fancy.dart';

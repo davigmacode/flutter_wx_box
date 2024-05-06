@@ -6,10 +6,14 @@ import 'package:flutter/painting.dart';
 
 import 'style.dart';
 
-/// A side of a border of a box.
+/// A description of a side of a border for a box-shaped widget in Flutter.
+///
+/// This class defines the configuration for a border side, including its style
+/// (solid, dashed, etc.), color, width, and offset. It's used by various border
+/// classes that extend `WxOutlinedBorder` to specify the appearance of the border.
 @immutable
 class WxBorderSide with Diagnosticable {
-  /// Creates the side of a border.
+  /// Creates a new `WxBorderSide` object.
   ///
   /// By default, the border is 1.0 logical pixels wide and solid black.
   const WxBorderSide({
@@ -20,6 +24,7 @@ class WxBorderSide with Diagnosticable {
     this.offset,
   });
 
+  /// Creates a `WxBorderSide` object from a legacy `BorderSide`.
   WxBorderSide.fromLegacy(BorderSide side)
       : style = null,
         gradient = null,
@@ -27,14 +32,16 @@ class WxBorderSide with Diagnosticable {
         width = side.style == BorderStyle.none ? 0 : side.width,
         offset = side.strokeAlign;
 
-  /// A hairline black border that is not rendered.
+  /// A constant representing a hairline black border that is not rendered.
   static const WxBorderSide none = WxBorderSide(width: 0.0);
 
+  /// The style of the border (e.g., solid, dashed).
   final WxBorderStyle? style;
 
   /// The color of this side of the border.
   final Color? color;
 
+  /// A gradient to use for painting the border.
   final Gradient? gradient;
 
   /// The width of this side of the border, in logical pixels.
@@ -91,12 +98,16 @@ class WxBorderSide with Diagnosticable {
   /// This is a constant for use with [offset].
   static const double alignOutside = 1.0;
 
+  /// Returns the effective style of the border, using [WxBorderStyle.solid] by default.
   WxBorderStyle get effectiveStyle => style ?? WxBorderStyle.solid;
 
+  /// Returns the effective color of the border, using black by default.
   Color get effectiveColor => color ?? const Color(0xFF000000);
 
+  /// Returns the effective width of the border, using `1` by default.
   double get effectiveWidth => width ?? 1;
 
+  /// Returns the effective offset of the border, using `WxBorderStyle.alignInside` value by default.
   double get effectiveOffset => offset ?? alignInside;
 
   /// Creates a copy of this border but with the given fields replaced with the new values.
@@ -116,6 +127,8 @@ class WxBorderSide with Diagnosticable {
     );
   }
 
+  /// Converts a [WxBorderSide] object to a legacy [BorderSide] object,
+  /// which is used by the standard Flutter.
   BorderSide toLegacy() {
     return BorderSide(
       style: effectiveWidth > 0 ? BorderStyle.solid : BorderStyle.none,

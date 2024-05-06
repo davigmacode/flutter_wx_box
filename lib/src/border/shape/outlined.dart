@@ -7,14 +7,15 @@ import 'package:flutter/painting.dart';
 import '../side.dart';
 import '../style.dart';
 
-/// A WxShapeBorder that draws an outline with the width and color specified
-/// by [side].
+/// A base class that represents an outlined border in `WxBorder` system.
+///
+/// This class defines the common properties and behavior for borders that draw an outline
+/// with a specified width and color. Subclasses can implement specific outline styles
+/// (e.g., solid, dashed).
 @immutable
 abstract class WxOutlinedBorder extends ShapeBorder {
   /// Abstract const constructor. This constructor enables subclasses to provide
   /// const constructors so that they can be used in const expressions.
-  ///
-  /// The value of [side] must not be null.
   const WxOutlinedBorder({
     this.side,
     this.style,
@@ -34,17 +35,22 @@ abstract class WxOutlinedBorder extends ShapeBorder {
   /// Otherwise the outline is centered over the shape's boundary.
   final WxBorderSide? side;
 
+  /// The style of the outline (e.g., solid, dashed). Can be overridden by subclasses.
   final WxBorderStyle? style;
 
-  /// The color of this side of the border.
+  /// The color of the outline, if specified. Can be overridden by `gradient`.
   final Color? color;
 
+  /// A gradient to use for painting the outline, if provided.
   final Gradient? gradient;
 
+  /// The desired width of the outline, in logical pixels.
   final double? width;
 
+  /// An offset to apply to the outline, in logical pixels.
   final double? offset;
 
+  /// Returns the effective [WxBorderSide] considering any provided overrides.
   WxBorderSide get effectiveSide => (side ?? WxBorderSide.none).copyWith(
         style: style,
         color: color,
@@ -53,8 +59,9 @@ abstract class WxOutlinedBorder extends ShapeBorder {
         offset: offset,
       );
 
-  /// Returns a copy of this OutlinedBorder that draws its outline with the
-  /// specified [side], if [side] is non-null.
+  /// Creates a copy of this `WxOutlinedBorder` with modified properties.
+  ///
+  /// Use this method to create a new border with specific customizations.
   WxOutlinedBorder copyWith({
     WxBorderSide? side,
     WxBorderStyle? style,
@@ -64,6 +71,10 @@ abstract class WxOutlinedBorder extends ShapeBorder {
     double? offset,
   });
 
+  /// Calculates the path for a non-solid outline style (e.g., dashed).
+  ///
+  /// This method takes a source path and transforms it based on the effective side's style
+  /// and width to create a path representing the non-solid outline.
   Path getNonSolidPath(Path source, {TextDirection? textDirection}) {
     final Path dest = Path();
     final sideStyle = effectiveSide.effectiveStyle;

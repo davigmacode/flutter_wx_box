@@ -74,7 +74,7 @@ abstract class WxOutlinedBorder extends ShapeBorder {
     final sideWidth = effectiveSide.effectiveWidth;
     for (final PathMetric metric in source.computeMetrics()) {
       int index = 0;
-      double distance = sideStyle.offset * metric.length;
+      double distance = 0;
       bool draw = true;
       while (distance < metric.length) {
         if (index >= sideStyle.pattern.length) {

@@ -81,7 +81,7 @@ class MyHomePage extends StatelessWidget {
                     WxBox.square(
                       borderWidth: 1,
                       borderStyle: BorderStyle.solid,
-                      borderColor: Colors.black,
+                      borderColor: Colors.black87,
                       borderOffset: BorderSide.strokeAlignOutside,
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       padding: EdgeInsets.all(5),
@@ -162,20 +162,28 @@ class MyHomePage extends StatelessWidget {
                       ),
                     ),
                     WxAnimatedBox.stadium(
-                      color: Colors.amber,
+                      // color: Colors.amber,
                       width: 150,
                       height: 50,
-                      borderWidth: 4,
+                      borderWidth: 1,
                       borderStyle: BorderStyle.solid,
                       borderColor: Theme.of(context).colorScheme.onSurface,
                       borderOffset: BorderSide.strokeAlignOutside,
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Text',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(height: 1.15),
+                      clipBehavior: Clip.antiAlias,
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          onTap: () {},
+                          child: Center(
+                            child: Text(
+                              'Text',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(height: 1.15),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

@@ -1,3 +1,8 @@
+## 4.1.0
+
+* Improved clipper and elevation renderer.
+* Early preview of widgetarian border shape system.
+
 ## 4.0.0
 
 * Fixed animated box losing border radius

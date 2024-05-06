@@ -1,27 +1,61 @@
 import 'dart:ui' show lerpDouble;
-import 'package:flutter/foundation.dart' show listEquals;
+import 'package:flutter/foundation.dart';
 
-class WxBorderStyle {
+/// A class representing a border style for widgets.
+///
+/// You can create custom border styles using the constructor or
+/// use the built-in constant styles like `solid`, `dotted`, `dashed`,
+/// and `morse`.
+@immutable
+class WxBorderStyle with Diagnosticable {
+  /// Creates a new `WxBorderStyle` with the specified pattern,
+  /// and flag to determine the pattern should relative to border width or not.
+  ///
+  /// * `pattern`: A list of doubles representing the on/off durations of the
+  ///   border pattern. A value of `1` represents "on," and other values
+  ///   represent "off."
+  /// * `absolute` (default: `false`): Whether the pattern's position is
+  ///   relative to the border width (false) or absolute value (true).
   const WxBorderStyle(
     this.pattern, {
-    this.offset = 0,
     this.absolute = false,
   });
 
-  static const solid = WxBorderStyle([]);
+  /// A constant representing a solid border style.
+  static const solid = WxBorderStyle([1, 0]);
+
+  /// A constant representing a dotted border style.
   static const dotted = WxBorderStyle([1]);
+
+  /// A constant representing a dashed border style.
   static const dashed = WxBorderStyle([3, 2]);
+
+  /// A constant representing a Morse code-like border style.
   static const morse = WxBorderStyle([3, 2, 1, 2]);
 
+  /// The list of doubles defining the on/off durations of the border pattern.
   final List<double> pattern;
-  final double offset;
+
+  /// Whether the pattern's value is relative to border width value or absolute value.
   final bool absolute;
 
-  bool get isSolid => pattern.isEmpty;
+  /// Checks if the border style is solid (pattern is equal to `WxBorderStyle.solid.pattern`).
+  bool get isSolid => listEquals(pattern, WxBorderStyle.solid.pattern);
 
+  /// Checks if the border style is non-solid (not equal to `WxBorderStyle.solid.pattern`).
   bool get isNonSolid => !isSolid;
 
-  static WxBorderStyle? lerp(WxBorderStyle? a, WxBorderStyle? b, double t) {
+  /// Creates a lerped (linearly interpolated) border style between two
+  /// existing styles.
+  ///
+  /// * `a`: The first `WxBorderStyle` (can be null).
+  /// * `b`: The second `WxBorderStyle` (can be null).
+  /// * `t`: The interpolation factor (0.0 for `a`, 1.0 for `b`).
+  static WxBorderStyle? lerp(
+    WxBorderStyle? a,
+    WxBorderStyle? b,
+    double t,
+  ) {
     if (a == null) return b;
     if (b == null) return a;
     final lowestMultiple = a.pattern.length * b.pattern.length;
@@ -36,7 +70,6 @@ class WxBorderStyle {
               ) ??
               0,
       ],
-      offset: lerpDouble(a.offset, b.offset, t) ?? 0,
       absolute: t < 0.5 ? a.absolute : b.absolute,
     );
   }
@@ -51,10 +84,16 @@ class WxBorderStyle {
     }
     return other is WxBorderStyle &&
         listEquals(other.pattern, pattern) &&
-        other.offset == offset &&
         other.absolute == absolute;
   }
 
   @override
-  int get hashCode => Object.hash(pattern, offset, absolute);
+  int get hashCode => Object.hash(pattern, absolute);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IterableProperty('pattern', pattern));
+    properties.add(DiagnosticsProperty<bool>('absolute', absolute));
+  }
 }

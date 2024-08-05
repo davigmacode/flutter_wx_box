@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'utils.dart';
 
+const colorBlack = Color(0xFF000000);
+const colorTransparent = Color(0x00000000);
+
 /// Const widget that provides a box-like layout with customizable elevation
 class WxBox extends StatelessWidget {
   /// Create a box widget
@@ -229,13 +232,6 @@ class WxBox extends StatelessWidget {
   /// Defaults to [Clip.antiAlias].
   final Clip? clipBehavior;
 
-  /// Elevation value from property with default value `0.0`
-  double get effectiveElevation => elevation ?? 0.0;
-
-  /// Elevation color from property with default value black
-  Color get effectiveElevationColor =>
-      elevationColor ?? const Color(0xFF000000);
-
   /// Clip Behavior from property with default value `Clip.none`
   Clip get effectiveClipBehavior => clipBehavior ?? Clip.none;
 
@@ -301,10 +297,12 @@ class WxBox extends StatelessWidget {
       child: result,
     );
 
-    if (effectiveElevation > 0) {
+    if (elevation != null) {
+      final effectiveElevation = elevation ?? 0;
+      final effectiveElevationColor = elevationColor ?? colorBlack;
       if (effectiveBorderShape is RoundedRectangleBorder) {
         result = PhysicalModel(
-          color: const Color(0x00000000),
+          color: colorTransparent,
           elevation: effectiveElevation,
           shadowColor: effectiveElevationColor,
           clipBehavior: Clip.none,
@@ -314,7 +312,7 @@ class WxBox extends StatelessWidget {
         );
       } else {
         result = PhysicalShape(
-          color: const Color(0x00000000),
+          color: colorTransparent,
           elevation: effectiveElevation,
           shadowColor: effectiveElevationColor,
           clipBehavior: Clip.none,

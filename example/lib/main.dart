@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wx_box/wx_box.dart';
 import 'package:wx_text/wx_text.dart';
+import 'package:wx_anchor/wx_anchor.dart';
 
 void main() {
   runApp(const MyApp());
@@ -138,6 +139,7 @@ class MyHomePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    ElevatedBox(),
                   ],
                 ),
               ),
@@ -191,6 +193,56 @@ class MyHomePage extends StatelessWidget {
               ),
               const SizedBox(height: 40),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ElevatedBox extends StatefulWidget {
+  const ElevatedBox({super.key});
+
+  @override
+  State<ElevatedBox> createState() => _ElevatedBoxState();
+}
+
+class _ElevatedBoxState extends State<ElevatedBox> {
+  bool _isHover = false;
+  bool _isPressed = false;
+
+  _setIsHover(bool val) {
+    setState(() => _isHover = val);
+  }
+
+  _setIsPressed(bool val) {
+    setState(() => _isPressed = val);
+  }
+
+  double get _elevation => _isPressed
+      ? 0
+      : _isHover
+          ? 3
+          : 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return WxAnchor.circle(
+      radius: 25,
+      onHover: (hover) => _setIsHover(hover),
+      onTapUp: (_) => _setIsPressed(false),
+      onTapDown: (_) => _setIsPressed(true),
+      onTapCancel: () => _setIsPressed(false),
+      child: WxAnimatedBox.circle(
+        elevation: _elevation,
+        radius: 25,
+        color: Colors.amber,
+        alignment: Alignment.center,
+        child: const Text(
+          'Text',
+          style: TextStyle(
+            color: Colors.white,
+            height: 1.15,
           ),
         ),
       ),

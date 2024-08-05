@@ -33,6 +33,7 @@ dependencies:
   wx_box:
     path: ../
   wx_text: ^2.0.1
+  wx_anchor: ^1.3.0
 
 dev_dependencies:
   flutter_test:

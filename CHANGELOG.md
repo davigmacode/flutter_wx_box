@@ -1,3 +1,10 @@
+## 4.2.0
+
+* Improved elevation rendering
+* Separate box and border entry point
+* Renamed util function to create shape border and provides api doc
+* Moved createShapeBorder into separated entry point
+
 ## 4.1.0
 
 * Improved clipper and elevation renderer.

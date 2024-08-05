@@ -245,7 +245,7 @@ class WxAnimatedBox extends ImplicitlyAnimatedWidget {
 
 class AnimatedBoxState extends AnimatedWidgetBaseState<WxAnimatedBox> {
   ShapeBorder get borderShape {
-    return buildBorder(
+    return createShapeBorder(
       borderShape: widget.border,
       borderRadius: widget.borderRadius,
       borderSide: widget.borderSide,

@@ -2,7 +2,26 @@ import 'package:flutter/painting.dart';
 import '../border/shape/outlined.dart';
 import '../border/shape/rectangle.dart';
 
-ShapeBorder buildBorder({
+/// Creates a `ShapeBorder` based on the provided parameters.
+///
+/// This method constructs a `ShapeBorder` instance by combining and overriding
+/// properties from the given parameters. It supports various `ShapeBorder` types
+/// and allows customization of their appearance.
+///
+/// If `borderShape` is not provided, a `RoundedRectangleBorder` is used as the default.
+///
+/// Parameters:
+///   - `borderShape`: The base `ShapeBorder` to modify.
+///   - `borderRadius`: The overall border radius.
+///   - `borderSide`: The border side properties (color, width, style, stroke align).
+///   - `borderColor`: The border color.
+///   - `borderWidth`: The border width.
+///   - `borderStyle`: The border style.
+///   - `borderOffset`: The border offset.
+///
+/// Returns:
+///   The constructed `ShapeBorder` instance.
+ShapeBorder createShapeBorder({
   ShapeBorder? borderShape,
   BorderRadius? borderRadius,
   BorderSide? borderSide,

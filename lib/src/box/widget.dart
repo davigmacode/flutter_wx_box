@@ -239,7 +239,7 @@ class WxBox extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? result = child;
 
-    final effectiveBorderShape = buildBorder(
+    final effectiveBorderShape = createShapeBorder(
       borderShape: border,
       borderRadius: borderRadius,
       borderSide: borderSide,

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'utils.dart';
+import 'package:wx_box/wx_shape.dart';
 
 const colorBlack = Color(0xFF000000);
 const colorTransparent = Color(0x00000000);

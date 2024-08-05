@@ -1,6 +1,8 @@
+library wx_shape;
+
 import 'package:flutter/painting.dart';
-import '../border/shape/outlined.dart';
-import '../border/shape/rectangle.dart';
+import 'src/border/shape/outlined.dart';
+import 'src/border/shape/rectangle.dart';
 
 /// Creates a `ShapeBorder` based on the provided parameters.
 ///

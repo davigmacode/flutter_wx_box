@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:wx_box/wx_shape.dart';
 import 'widget.dart';
-import 'utils.dart';
 
 class WxAnimatedBox extends ImplicitlyAnimatedWidget {
   /// Create an animated box widget

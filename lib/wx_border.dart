@@ -1,3 +1,3 @@
-library wx_border;
+library;
 
 export 'src/border/main.dart';

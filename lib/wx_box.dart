@@ -1,3 +1,3 @@
-library wx_box;
+library;
 
 export 'src/box/main.dart';

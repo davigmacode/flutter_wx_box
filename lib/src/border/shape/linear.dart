@@ -8,7 +8,7 @@ import 'outlined.dart';
 import '../side.dart';
 import '../style.dart';
 
-/// Defines the relative size and alignment of one <WxLinearBorder> edge.
+/// Defines the relative size and alignment of one [WxLinearBorder] edge.
 ///
 /// A [WxLinearBorder] defines a box outline as zero to four edges, each
 /// of which is rendered as a single line. The width and color of the
@@ -61,11 +61,11 @@ class WxLinearBorderSide extends WxBorderSide {
         );
 
   WxLinearBorderSide.fromLegacy(
-    BorderSide side, {
+    super.side, {
     this.size,
     this.alignment,
   })  : assert(size == null || size >= 0.0 && size <= 1.0),
-        super.fromLegacy(side);
+        super.fromLegacy();
 
   /// A value between 0.0 and 1.0 that defines the length of the edge as a
   /// percentage of the length of the corresponding box

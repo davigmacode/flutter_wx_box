@@ -1,3 +1,7 @@
+# wx_box
+
+> [!IMPORTANT]
+> **Repository Moved to Monorepo**: Active development of $(System.Collections.Hashtable.Name) has migrated to the official [**davigmacode/flutter_wx**](https://github.com/davigmacode/flutter_wx) monorepo under [packages/wx_box](https://github.com/davigmacode/flutter_wx/tree/main/packages/wx_box).
 [![Pub Version](https://img.shields.io/pub/v/wx_box)](https://pub.dev/packages/wx_box) ![GitHub](https://img.shields.io/github/license/davigmacode/flutter_wx_box) [![GitHub](https://badgen.net/badge/icon/buymeacoffee?icon=buymeacoffee&color=yellow&label)](https://www.buymeacoffee.com/davigmacode) [![GitHub](https://badgen.net/badge/icon/ko-fi?icon=kofi&color=red&label)](https://ko-fi.com/davigmacode)
 
 Const widget that provides a box-like layout with customizable elevation.

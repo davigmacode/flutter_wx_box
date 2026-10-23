@@ -228,7 +228,7 @@ class _ElevatedBoxState extends State<ElevatedBox> {
   @override
   Widget build(BuildContext context) {
     return WxAnchor.circle(
-      radius: 25,
+      overlayRadius: 25,
       onHover: (hover) => _setIsHover(hover),
       onTapUp: (_) => _setIsPressed(false),
       onTapDown: (_) => _setIsPressed(true),

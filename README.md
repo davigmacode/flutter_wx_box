@@ -52,6 +52,44 @@ WxBox.stadium(
 )
 ```
 
+### Animated Box
+
+Use `WxAnimatedBox` for smooth implicit animations across size, padding, margin, color, elevation, and border shapes:
+
+```dart
+WxAnimatedBox(
+  duration: const Duration(milliseconds: 300),
+  curve: Curves.easeInOut,
+  width: isExpanded ? 200 : 100,
+  height: 60,
+  color: isExpanded ? Colors.indigo : Colors.blue,
+  borderRadius: BorderRadius.circular(isExpanded ? 24 : 8),
+  elevation: isExpanded ? 6 : 1,
+  child: const Center(
+    child: Text('Animated Box'),
+  ),
+)
+```
+
+### Advanced Borders
+
+Draw customizable borders with solid, dashed, dotted, or morse patterns:
+
+```dart
+WxBorder(
+  shape: WxRectangleBorder(
+    corners: BorderRadius.circular(12),
+    width: 2,
+    color: Colors.blueAccent,
+    style: WxBorderStyle.dashed,
+  ),
+  child: const Padding(
+    padding: EdgeInsets.all(16),
+    child: Text('Dashed Border Box'),
+  ),
+)
+```
+
 ## Sponsoring
 
 <a href="https://www.buymeacoffee.com/davigmacode" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="45"></a>

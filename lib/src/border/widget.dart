@@ -45,7 +45,7 @@ class WxBorder extends StatelessWidget {
         textDirection ?? Directionality.maybeOf(context);
     final painter = WxBorderPainter(shape, effectiveTextDirection);
     return CustomPaint(
-      painter: isBackground ? null : painter,
+      painter: isBackground ? painter : null,
       foregroundPainter: isForeground ? painter : null,
       child: clipBehavior != Clip.none
           ? ClipPath(

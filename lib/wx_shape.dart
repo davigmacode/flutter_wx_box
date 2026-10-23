@@ -1,4 +1,4 @@
-library wx_shape;
+library;
 
 import 'package:flutter/painting.dart';
 import 'src/border/shape/outlined.dart';
@@ -54,9 +54,9 @@ ShapeBorder createShapeBorder({
 
   if (borderShape is WxOutlinedBorder) {
     borderShape = borderShape.copyWith(
-      color: borderColor,
-      width: borderWidth,
-      offset: borderOffset,
+      color: borderColor ?? borderSide?.color,
+      width: borderWidth ?? borderSide?.width,
+      offset: borderOffset ?? borderSide?.strokeAlign,
     );
   }
 

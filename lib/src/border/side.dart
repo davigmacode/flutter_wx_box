@@ -240,7 +240,7 @@ class WxBorderSide with Diagnosticable {
   ///
   /// For example, this will return the negative [effectiveWidth] of the stroke
   /// for a [effectiveOffset] of -1, 0 for a [effectiveOffset] of 0, and the
-  /// [effectiveWidth] for a [effectiveOffset] of -1.
+  /// [effectiveWidth] for a [effectiveOffset] of 1.
   double get strokeOffset => effectiveWidth * effectiveOffset;
 
   @override

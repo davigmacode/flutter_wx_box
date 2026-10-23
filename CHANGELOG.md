@@ -1,3 +1,11 @@
+## 4.2.1
+
+* Fixed `WxBorder` painter background/foreground rendering logic
+* Supported `borderSide` properties fallback in `createShapeBorder` for `WxOutlinedBorder`
+* Modernized SDK constraint to Dart 3 and updated `flutter_lints` to `^5.0.0`
+* Added comprehensive unit and widget tests
+* Enhanced documentation with `WxAnimatedBox` and advanced borders examples
+
 ## 4.2.0
 
 * Improved elevation rendering
